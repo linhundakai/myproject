@@ -1,0 +1,27 @@
+
+server:
+  port: 8084
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8080/eureka/  #注册中心地址
+      
+#发布的application.name-profiles的properties（比如config-server-native.properties）      
+spring:
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        health:
+          enabled:  false
+       git:
+          uri: https://github.com/linhundakai/myproject.git
+          searchPaths: '{application}'
+        native:
+          searchLocations: file:D:\\cloud-config-repo
+        
+          
+          
+          
