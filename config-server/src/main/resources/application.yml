@@ -6,21 +6,30 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8080/eureka/  #注册中心地址
-      
-#发布的application.name-profiles的properties（比如config-server-native.properties）      
+
+
 spring:
   profiles:
     active: native
   cloud:
     config:
       server:
-        health:
-          enabled:  false
-       git:
-          uri: https://github.com/linhundakai/myproject.git
-          searchPaths: '{application}'
-        native:
-          searchLocations: file:D:\\cloud-config-repo
+        git:
+          uri: https://github.com/linhundakai/myproject/tree/master/config-server/src/main/resources/config
+          searchPaths: '{application}'  #搜索各个以服务名命名的文件夹下的所有yml
+          
+      
+#发布的application.name-profiles的properties（比如config-server-native.properties）      
+#spring:
+#  profiles:
+#    active: native
+#  cloud:
+#    config:
+#      server:
+#        health:
+#          enabled:  false
+#        native:
+#          searchLocations: file:D:\\cloud-config-repo
         
           
           
