@@ -1,6 +1,7 @@
 package cn.demo.service0.controller;
 
 import org.apache.commons.lang.time.FastDateFormat;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,9 +15,12 @@ import java.util.Date;
  */
 @RestController
 public class Service0Controller {
-
+  @Value("${test.value}")
+  String test;
+  
     @GetMapping("test")
     String test() {
+      System.err.println(test);
         return FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.sss").format(new Date());
     }
 
