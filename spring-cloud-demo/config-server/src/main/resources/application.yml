@@ -1,12 +1,24 @@
 server:
   port: 8084
+#加载顺序http://localhost:8084/{application}/{profile}/{label}
+#仓库中的配置文件会被转换成web接口，访问可以参照以下的规则：
+#/{application}/{profile}[/{label}]
+#/{application}-{profile}.yml
+#/{label}/{application}-{profile}.yml
+#/{application}-{profile}.properties
+#/{label}/{application}-{profile}.properties
+
 spring:
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-          uri: file:///${user.home}/config-repo
-          searchPaths: '{application}'  #搜索各个以服务名命名的文件夹下的所有yml
+        native:
+          searchLocations: file:D:\cloud-config-repo
+#        git:
+#          uri: file:///${user.home}/config-repo
+#          searchPaths: '{application}'  #搜索各个以服务名命名的文件夹下的所有yml
 eureka:
   client:
     serviceUrl:
