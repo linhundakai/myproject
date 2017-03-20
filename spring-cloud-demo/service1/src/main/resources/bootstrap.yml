@@ -1,6 +1,15 @@
+
 spring:
   application:
     name: service1
+  cloud:
+    config:
+      #读取服务中心的{application}，默认读取的application.name
+      name: service1
+      profile: native
+      uri: http://localhost:8084
+      enabled: true
+      
 eureka:
   client:
     serviceUrl:
