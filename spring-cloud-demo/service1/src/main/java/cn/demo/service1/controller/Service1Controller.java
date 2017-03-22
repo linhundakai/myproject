@@ -23,7 +23,7 @@ public class Service1Controller {
     
     @GetMapping("/test")
     public String test() {
-      System.err.println(test);
+      System.err.println("test2");
         return service0Client.test();
     }
 

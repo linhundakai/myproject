@@ -1,3 +1,4 @@
+
 eureka:
   client:
     serviceUrl:
@@ -7,8 +8,24 @@ spring:
     name: gateway
 server:
   port: 8083
+#反响代理配置  
+#这里的配置类似nginx的反响代理  
+#当请求/api/**会直接交给listOfServers配置的服务器处理  
+#当stripPrefix=true的时候 （http://127.0.0.1:8181/api/user/list -> http://192.168.1.100:8080/user/list）  
+#当stripPrefix=false的时候（http://127.0.0.1:8181/api/user/list -> http://192.168.1.100:8080/api/user/list）  
 zuul:
   routes:
-    service0: /service/0/**
-    service1: /service/1/**
-
+    api: #随便定义，当不存在serviceId时，默认该值为serviceId（就是注册服务的名称，属性spring.application.name）
+      path: /** #匹配/api/** 均路由到api
+      stripPrefix: false #感觉没有作用
+ribbon:
+  eureka:
+    enabled: false #加上此配置当访问：http://127.0.0.1:8083/test -> 127.0.0.1:8081/test,127.0.0.1:8082/test
+api:
+  ribbon:
+    listOfServers: 127.0.0.1:8081,127.0.0.1:8082 #为api服务指定一组服务地址，应该是用于负载均衡
+    
+    
+    
+    
+ 

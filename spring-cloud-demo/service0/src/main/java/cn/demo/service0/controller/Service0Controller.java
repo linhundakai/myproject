@@ -1,11 +1,14 @@
 package cn.demo.service0.controller;
 
+import java.util.Date;
+
 import org.apache.commons.lang.time.FastDateFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @Author: Leo
@@ -14,14 +17,17 @@ import java.util.Date;
  * @Description:
  */
 @RestController
+@RibbonClient(name = "testservice-provider")
 public class Service0Controller {
+
   @Value("${test.value}")
   String test;
-  
-    @GetMapping("test")
-    String test() {
-      System.err.println(test);
-        return FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.sss").format(new Date());
-    }
+
+
+  @GetMapping("test")
+  String test() {
+    System.err.println("test1");
+    return FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.sss").format(new Date());
+  }
 
 }
