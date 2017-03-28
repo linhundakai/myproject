@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * @Author: Leo
@@ -14,7 +13,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @SpringBootApplication(scanBasePackages = "cn.demo.service1")
 @EnableFeignClients
-@EnableWebMvc
 @EnableEurekaClient
 public class Application_service1 {
     public static void main(String[] args) {

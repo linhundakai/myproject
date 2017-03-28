@@ -4,6 +4,7 @@ import cn.demo.service1.client.Service0Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description:
  */
 @RestController
+@RequestMapping(value="/cluster_test")
 public class Service1Controller {
 
     @Autowired

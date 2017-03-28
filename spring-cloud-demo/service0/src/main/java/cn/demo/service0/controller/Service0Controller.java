@@ -3,12 +3,11 @@ package cn.demo.service0.controller;
 import java.util.Date;
 
 import org.apache.commons.lang.time.FastDateFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @Author: Leo
@@ -17,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
  * @Description:
  */
 @RestController
-@RibbonClient(name = "testservice-provider")
+@RequestMapping(value="/cluster_test")
 public class Service0Controller {
 
   @Value("${test.value}")

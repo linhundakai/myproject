@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient("service0")
 public interface Service0Client {
 
-    @RequestMapping(method = RequestMethod.GET, path = "test")
+    @RequestMapping(method = RequestMethod.GET, path = "/cluster_test/test")
     String test();
 
 }
