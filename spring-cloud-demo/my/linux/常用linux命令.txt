@@ -1,0 +1,6 @@
+
+grep 'root' /etc/group 
+grep '^root' /etc/group 匹配正则表达式的开始行 
+grep 'root$' /etc/group 匹配正则表达式的结束行 
+
+less [参数] 文件

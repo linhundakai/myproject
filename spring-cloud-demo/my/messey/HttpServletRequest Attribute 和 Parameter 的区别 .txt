@@ -1,0 +1,132 @@
+（1）HttpServletRequest类有setAttribute()方法，而没有setParameter()方法
+
+（2）当两个Web组件之间为链接关系时，被链接的组件通过getParameter()方法来获得请求参数，
+
+（3）当两个Web组件之间为转发关系时，转发目标组件通过getAttribute()方法来和转发源组件共享request范围内的数据。
+
+一般通过表单和链接传递的参数使用getParameter
+
+通过request.setAttribute("name","jerry")的方式赋值的使用request.getAttribute("name")
+
+这个问题主要是request和session的差别，request范围较小一些，只是一个请求，简单说就是你在页面上的一个操作， request.getParameter()就是从上一个页面中的url、form中获取参数，但如果一个request涉及多个类，后面还要取参数，可以用request.setAttribute()和request.getAttribute()，但是当结果输出之后，request就结束了。
+
+而session可以跨越很多页面，可以理解是客户端同一个IE窗口发出的多个请求。这之间都可以传递参数，比如很多网站的用户登录都用到了。
+
+一般可以用getParameter得到页面参数。。。字符串。。。
+
+getAttribute()可以得到对象。。。
+
+getParameter可以得到页面传来的参数如？id=123之类的。
+
+getAttribute()常用于servlet页面传递参数给jsp
+
+个人见解:
+
+当用户把值作为链接参数传递给下个页面或serve时,用getParameter()获取.如aa.jsp?id=1;还有表单的提交.
+
+当用户把值放在了request中的一个属性时(request.setAttribute("aa","tt"),"aa"这个属性名可以任意取的),用getAttribute(属性名)获取.
+
+request范围较小一些，只是一个请求，简单说就是你在页面上的一个操作， request.getParameter()就是从上一个页面中的url、form中获取参数。但如果一个request涉及多个类，后面还要取参数，可以用request.setAttribute()和request.getAttribute()，但是当结果输出之后，request就结束了。
+
+而session可以跨越很多页面。范围大于request。
+
+request.getParameter() 和request.getAttribute()  
+（1）request.getParameter()取得是通过容器的实现来取得通过类似post，get等方式传入的数据，，request.setAttribute()和getAttribute()只是在web容器内部流转，仅仅是请求处理阶段。 
+（2）request.getParameter()方法传递的数据，会从Web客户端传到Web服务器端，代表HTTP请求数据。request.getParameter()方法返回String类型的数据。 
+request.setAttribute()和getAttribute()方法传递的数据只会存在于Web容器内部 
+还有一点就是，HttpServletRequest类有setAttribute()方法，而没有setParameter()方法。 
+拿一个例子来说一下吧，假如两个WEB页面间为链接关系时，就是说要从1.jsp链接到2.jsp时，被链接的是2.jsp可以通过getParameter()方法来获得请求参数.  
+假如1.jsp里有 
+<form name="form1" method="post" action="2.jsp">  
+请输入用户姓名：<input type="text" name="username">  
+<input type="submit" name="Submit" value="提交">  
+</form>的话在2.jsp中通过request.getParameter("username")方法来获得请求参数username:  
+<% String username=request.getParameter("username"); %>  
+************************************************************  
+但是如果两个WEB间为转发关系时，转发目的WEB可以用getAttribute()方法来和转发源WEB共享request范围内的数据，也还是说一个例子吧。 
+有1.jsp和2.jsp  
+1.jsp希望向2.jsp传递当前的用户名字，如何传递这一数据呢？先在1.jsp中调用如下setAttribute()方法： 
+<%  
+String username=request.getParameter("username");  
+request.setAttribute("username"，username);  
+%>  
+<jsp:forward page="2.jsp" />  
+在2.jsp中通过getAttribute()方法获得用户名字:  
+<% String username=(String)request.getAttribute("username"); %>
+
+getAttribute 和 getParameter 的区别
+
+1.getAttribute是取得jsp中 用setAttribute設定的attribute  
+2.parameter得到的是string；attribute得到的是object  
+3.request.getParameter()方法传递的数据，会从Web客户端传到Web服务器端，代表HTTP请求数据； request.setAttribute()和getAttribute()方法传递的数据只会存在于Web容器内部，在具有转发关系的Web组件之间 共享。即request.getAttribute()方法返回request范围内存在的对象，而request.getParameter()方法是 获取http提交过来的数据。
+
+JSP中getParameter与getAttribute有何区别？ 
+——说实话，这个问题当初我也困惑很久，我也知道怎么用，可是到底有什么区别，我也不是很清楚，后来找了很多资料才明白。昨天又有一位朋友问我这个问题，想我当初同样也困惑过，于是我就把这个问题贴出来，让同样困惑的朋友解惑。 
+——getParameter得到的都是String类型的。或者是http://a.jsp?id=123中的123，或者是某个表单提交过去的数据。 
+——getAttribute则可以是对象。 
+——getParameter()是获取POST/GET传递的参数值； 
+——getAttribute()是获取对象容器中的数据值； 
+——getParameter：用于客户端重定向时，即点击了链接或提交按扭时传值用，即用于在用表单或url重定向传值时接收数据用。 
+——getAttribute：用于服务器端重定向时，即在sevlet中使用了forward函数,或struts中使用了mapping.findForward。getAttribute只能收到程序用setAttribute传过来的值。 
+——getParameter()是获取POST/GET传递的参数值； 
+——getAttribute()是获取SESSION的值； 
+另外，可以用setAttribute,getAttribute发送接收对象.而getParameter显然只能传字符串。 
+setAttribute 是应用服务器把这个对象放在该页面所对应的一块内存中去，当你的页面服务器重定向到另一个页面时，应用服务器会把这块内存拷贝另一个页面所对应的内存中。 这样getAttribute就能取得你所设下的值，当然这种方法可以传对象。session也一样，只是对象在内存中的生命周期不一样而已。 
+getParameter只是应用服务器在分析你送上来的request页面的文本时，取得你设在表单或url重定向时的值。
+
+getParameter 返回的是String, 用于读取提交的表单中的值;        
+getAttribute 返回的是Object，需进行转换,可用setAttribute设置成任意对象，使用很灵活，可随时用；
+
+个人认为:  
+request.getAttribute():是request时设置的变量的值,用request.setAttribute("name","您自己的值");来设置值,  
+request.getParameter():提取发送过来的参数如:本网页 
+http://community.csdn.NET/Expert/topic/4633/4633804.xml?temp=.3488123  
+request.getParameter("temp")==".3488123"
+
+request.getParameter  
+是用来接受来自get方法或post方法的参数 
+<form method=post>  
+<form method=get>  
+<a href="1.jsp?id=1">ok</a>  
+只能接受Java.lang.String  
+也就是说String hotel_id = request.getParameter("hotel_id");  
+request.getAttribute  
+是用来接受来自servlet的变量或Action(其实Action就是特殊的Servlet)  
+在Action中，request.setAttribute("ret",ret);  
+只能接受java.lang.Object  
+也就是说List ret = (List)request.getAttribute("ret");  
+如果你只用JSP，根本用不到request.getAttribute()
+
+request.getAttribute()和request.getParameter()的区别是request.getAttribute()获得的是对象类型，而request.getParameter()获得的是字符串类型
+
+一般的网页应用，如同 chenshaizi(陈绍彬) 所说，基本上是基于Post方式的传递，用getParameter取值。对于自己控制的，可以通过request.setAttribute和getAttribute 实现值得传递。 
+对于应用Structs框架的，getAttribute用的多一点，其他的基本上用getParameter
+
+我的理解： 
+session.getAttribute();获得session 
+request.getParameter();获得parameter
+
+1.getParameter可以获得客户端传送给服务器端的参数值。 
+getAttribute可以得到由setAttribute设置的参数值，就相当于是使用getAttribute得到一个自己定义的参数，而不是从客户端得到的参数。 
+2.getParameter只能传递string类型的变量，getAttribute能传递vector。
+
+getParameter(),获取表单的值 getAttribute()获得session的值 
+getParameterNames() 获得表单或则url中的参数的数组 
+getattributeNames()：返回request对象所有属性的名字，结果集是一个Enumeration（枚举）类的实例
+
+根据楼上，是不是 getParameter()得到的值如果下次不提交或保存起来的话，下次重定向后就没啦？ 
+：理解对了 
+getAttribute()所要得到的属性值因为存在session中，所以重定向后仍可以取出？ 
+getAttribute()在request和session中都有，只是作用域不同，在取之前肯定是要在某个地方存一下，这种东东可以存取对象
+
+呵呵 
+http://community.csdn.Net/Expert/topic/4763/4763471.xml?temp=.1793177 
+看见后面的?temp=.1793177没有，？号后面的这个东西用request.getAttribute("temp")就能得到字符串".1793177"， 
+而getAttribute()之前，你必须在页面或者逻辑中用serAttribute()设置了才能用，已经很清楚了，我不再说了哈
+
+Parameter是html裡傳來的 像 checkbox textfield password radio ...的value 
+getAttribute是取得jsp中用setAttribute設定的attribute
+
+還有.... 
+parameter得到的是string 
+attribute得到的是object

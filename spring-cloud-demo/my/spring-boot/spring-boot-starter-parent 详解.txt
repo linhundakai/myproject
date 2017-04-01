@@ -1,0 +1,40 @@
+springboot官方推荐我们使用spring-boot-starter-parent，spring-boot-starter-parent包含了以下信息：
+
+1、使用java6编译级别
+
+2、使用utf-8编码
+
+3、实现了通用的测试框架 (JUnit, Hamcrest, Mockito).
+
+4、智能资源过滤
+
+5、智能的插件配置(exec plugin, surefire, Git commit ID, shade).
+
+使用时在pom.xml添加
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.0.2.BUILD-SNAPSHOT</version>
+</parent>
+
+即可，非常方便，如果你需要改变java的编译级别则可以添加属性：
+
+<properties>
+    <java.version>1.8</java.version>
+</properties>
+
+当然，任何一个成熟的框架都是可灵活配置的，我们也可以不使用spring-boot-starter-parent，可以自己配置
+
+<dependencyManagement>
+     <dependencies>
+        <dependency>
+            <!-- Import dependency management from Spring Boot -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>1.0.2.BUILD-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>

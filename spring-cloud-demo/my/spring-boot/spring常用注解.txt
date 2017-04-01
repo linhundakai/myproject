@@ -1,0 +1,144 @@
+本文汇总了Spring的常用注解，以方便大家查询和使用，具体如下：
+----------------------------------------------------------------------------------------
+
+run方法执行顺序:
+1.初始化SpringApplicationRunListeners并且开始监听
+2.加载StandardEnvironment(包括系统参数   环境变量参数 properties/yml文件   profiles)
+3.把environment set到Listeners里面
+4.默认通过AnnotationConfigApplicationContext扫描所有的注解类，创建并且注册bean（默认都是创建的单列）
+5.创建context，并且把environment set到context里面
+备注:如果需要初始化spring-boot即将完成的时候马上去做一些事情，我们可以实现CommandLineRunner该接口
+
+分析:
+SpringApplication在初始化的时候，会去创建environment，这里默认是创建的StandardEnvironment，接着这个类会去加载sources
+
+三:annotation总结分析
+
+基于类的注解:
+--初始装载
+@SpringBootApplication              spring-boot程序入口标志类
+@Configuration                             自动配置，类似于加载spring加载xml 装配所有的bean事务等 所标识的类里面可以使用@Bean 并且启动的时候会初始化bean
+@EnableAutoConfiguration       Spring-Boot 根据应用所声明的依赖来对Spring框架进行自动配置
+@ComponentScan                     规定扫描包的范围
+@PropertySources                  property扫描加载
+--业务区分
+@Component 定义该bean为一个普通组件
+@Repository 定义该bean是一个仓储，用于数据库、mq、redis以及其它一些远程访问的资源
+@Service  定义该bean是一个业务逻辑
+@Controller  定义该bean是一个控制页面访问层
+--加载条件
+@Order  配置加载顺序
+@ConditionalOnClass  该注解的参数对应的类必须存在，否则不解析该注解修饰的配置类；
+@ConditionalOnMissingBean  该注解表示，如果存在它修饰的类的bean，则不需要再创建这个bean；可以给该注解传入参数例如@ConditionOnMissingBean(name = "example")，这个表示如果name为“example”的bean存在，这该注解修饰的代码块不执行。
+@AutoConfigureAfter 在摸个自动装载类之后装载
+
+
+基于属性的注解:
+@Value 加载配置属性的值
+@Autowired 自动注入bean
+@Qualifier 当存在多个bean注入时，需要通过name进行过滤
+@Resource 获取当前jvm的resource 也类似依赖注入
+@Inject 字段注入bean
+
+
+基于方法的注解:
+@Bean  发布一个返回object类型的bean，类似配置xml发布一个bean
+@PostConstruct 指定当类加载完成的时候就会执行该方法
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+spring boot 4.0版本后
+@RestController 注解告诉Spring以字符串的形式渲染结果，并直接返回给调用者
+@Controller注解需要在方法上加上@ResponseBody才能实现rest服务
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+ @EnableAutoConfiguration注解
+
+第二个类级别的注解是 @EnableAutoConfiguration 。这个注解告诉Spring Boot根据添加的jar依赖猜测你想如何配置Spring。由于 spring-boot-starter-web 添加了Tomcat和Spring MVC，所以auto-configuration将假定你正在开发一个web应用并相应地对Spring进行设置。Starter POMs和Auto-Configuration：设计auto-configuration的目的是更好的使用"Starter POMs"，但这两个概念没有直接的联系。你可以自由地挑选starter POMs以外的jar依赖，并且Spring Boot将仍旧尽最大努力去自动配置你的应用。
+
+你可以通过将 @EnableAutoConfiguration 或 @SpringBootApplication 注解添加到一个 @Configuration 类上来选择自动配置。
+注：你只需要添加一个 @EnableAutoConfiguration 注解。我们建议你将它添加到主 @Configuration 类上。
+
+如果发现应用了你不想要的特定自动配置类，你可以使用 @EnableAutoConfiguration 注解的排除属性来禁用它们。
+@Configuration  
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})  
+public class MyConfiguration {
+}
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+@Configuration
+
+@Configuration把一个类作为一个IoC容器，它的某个方法头上如果注册了@Bean，就会作为这个Spring容器中的Bean。
+Spring Boot提倡基于Java的配置。尽管你可以使用一个XML源来调用 SpringApplication.run() ，我们通常建议你使用 @Configuration 类作为主要源。一般定义 main 方法的类也是主要 @Configuration 的一个很好候选。你不需要将所有的 @Configuration 放进一个单独的类。 @Import 注解可以用来导入其他配置类。另外，你也可以使用 @ComponentScan 注解自动收集所有的Spring组件，包括 @Configuration 类。
+
+如果你绝对需要使用基于XML的配置，我们建议你仍旧从一个 @Configuration 类开始。你可以使用附加的 @ImportResource 注解加载XML配置文件。
+
+@Configuration注解该类，等价 与XML中配置beans；用@Bean标注方法等价于XML中配置bean
+
+@ComponentScan(basePackages = "com.hyxt",includeFilters = {@ComponentScan.Filter(Aspect.class)})  
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+ @SpringBootApplication
+
+很多Spring Boot开发者总是使用 @Configuration ， @EnableAutoConfiguration 和 @ComponentScan 注解他们的main类。由于这些注解被如此频繁地一块使用（特别是你遵循以上最佳实践时），Spring Boot提供一个方便的 @SpringBootApplication 选择。
+该 @SpringBootApplication 注解等价于以默认属性使用 @Configuration ， @EnableAutoConfiguration 和 @ComponentScan 。
+@SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan  
+public class Application {  
+    public static void main(String[] args) {  
+        SpringApplication.run(Application.class, args);  
+    }  
+}  
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+ @Profiles
+Spring Profiles提供了一种隔离应用程序配置的方式，并让这些配置只能在特定的环境下生效。
+任何@Component或@Configuration都能被@Profile标记，从而限制加载它的时机。
+@Profile("production")  
+public class ProductionConfiguration {  
+// ...  
+}  
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+@ResponseBody
+
+表示该方法的返回结果直接写入HTTP response body中
+
+一般在异步获取数据时使用，在使用@RequestMapping后，返回值通常解析为跳转路径，加上
+@responsebody后返回结果不会被解析为跳转路径，而是直接写入HTTP response body中。比如
+异步获取json数据，加上@responsebody后，会直接返回json数据。
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+@Component：
+泛指组件，当组件不好归类的时候，我们可以使用这个注解进行标注。一般公共的方法我会用上这个注解
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+@AutoWired
+byType方式。把配置好的Bean拿来用，完成属性、方法的组装，它可以对类成员变量、方法及构
+造函数进行标注，完成自动装配的工作。
+当加上（required=false）时，就算找不到bean也不报错。
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+全局处理异常的：
+@ControllerAdvice：
+包含@Component。可以被扫描到。
+统一处理异常。
+@ExceptionHandler（Exception.class）：
+用在方法上面表示遇到这个异常就执行以下方法。
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+@Scope注解 作用域
+@Lazy(true) 表示延迟初始化
+@Service用于标注业务层组件、
+@Controller用于标注控制层组件（如struts中的action）
+@Repository用于标注数据访问组件，即DAO组件。
+@Component泛指组件，当组件不好归类的时候，我们可以使用这个注解进行标注。
+@Scope用于指定scope作用域的（用在类上）
+@PostConstruct用于指定初始化方法（用在方法上）
+@PreDestory用于指定销毁方法（用在方法上）
+@DependsOn：定义Bean初始化及销毁时的顺序
+@Primary：自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常
+@Autowired 默认按类型装配，如果我们想使用按名称装配，可以结合@Qualifier注解一起使用。如下：
+@Autowired @Qualifier("personDaoBean") 存在多个实例配合使用
+@Resource默认按名称装配，当找不到与名称匹配的bean才会按类型装配。
+@PostConstruct 初始化注解
+@PreDestroy 摧毁注解 默认 单例  启动就加载
+@Async异步方法调用，需要添加以下代码：

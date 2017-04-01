@@ -1,0 +1,245 @@
+Redis是一个开源，高级的键值存储和一个适用的解决方案，用于构建高性能，可扩展的Web应用程序。
+
+Redis有三个主要特点，使它优越于其它键值数据存储系统 -
+
+    Redis将其数据库完全保存在内存中，仅使用磁盘进行持久化。
+    与其它键值数据存储相比，Redis有一组相对丰富的数据类型。
+    Redis可以将数据复制到任意数量的从机中。
+
+Redis官方网网站是：http://www.redis.io/ ，如下：
+
+Redis的优点
+
+以下是Redis的一些优点。
+
+    异常快 - Redis非常快，每秒可执行大约110000次的设置(SET)操作，每秒大约可执行81000次的读取/获取(GET)操作。
+    支持丰富的数据类型 - Redis支持开发人员常用的大多数数据类型，例如列表，集合，排序集和散列等等。这使得Redis很容易被用来解决各种问题，因为我们知道哪些问题可以更好使用地哪些数据类型来处理解决。
+    操作具有原子性 - 所有Redis操作都是原子操作，这确保如果两个客户端并发访问，Redis服务器能接收更新的值。
+    多实用工具 - Redis是一个多实用工具，可用于多种用例，如：缓存，消息队列(Redis本地支持发布/订阅)，应用程序中的任何短期数据，例如，web应用程序中的会话，网页命中计数等。
+
+Redis与其他键值存储系统
+
+    Redis是键值数据库系统的不同进化路线，它的值可以包含更复杂的数据类型，可在这些数据类型上定义原子操作。
+
+    Redis是一个内存数据库，但在磁盘数据库上是持久的，因此它代表了一个不同的权衡，在这种情况下，在不能大于存储器(内存)的数据集的限制下实现非常高的写和读速度。
+
+    内存数据库的另一个优点是，它与磁盘上的相同数据结构相比，复杂数据结构在内存中存储表示更容易操作。 因此，Redis可以做很少的内部复杂性。
+
+1. Redis环境安装配置
+
+在本章中，您将了解和学习Redis的环境安装设置。
+在Ubuntu上安装Redis
+
+要在Ubuntu上安装Redis，打开终端并键入以下命令 -
+
+[yiibai@ubuntu:~]$ sudo apt-get update 
+[yiibai@ubuntu:~]$ sudo apt-get install redis-server
+Shell
+
+这将在Ubuntu机器上安装Redis。
+
+启动Redis
+
+[yiibai@ubuntu:~]$ redis-server
+[2988] 07 Feb 17:09:42.485 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+[2988] 07 Feb 17:09:42.488 # Unable to set the max number of files limit to 10032 (Operation not permitted), setting the max clients configuration to 3984.
+[2988] 07 Feb 17:09:42.490 # Warning: 32 bit instance detected but no memory lim
+                _._
+           _.-``__ ''-._
+      _.-``    `.  `_.  ''-._           Redis 2.8.4 (00000000/0) 32 bit
+  .-`` .-```.  ```\/    _.,_ ''-._
+ (    '      ,       .-`  | `,    )     Running in stand alone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+ |    `-._   `._    /     _.-'    |     PID: 2988
+  `-._    `-._  `-./  _.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |           http://redis.io
+  `-._    `-._`-.__.-'_.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |
+  `-._    `-._`-.__.-'_.-'    _.-'
+      `-._    `-.__.-'    _.-'
+          `-._        _.-'
+              `-.__.-'
+
+[2988] 07 Feb 17:09:42.581 # Server started, Redis version 2.8.4
+[2988] 07 Feb 17:09:42.582 # WARNING overcommit_memory is set to 0! Background s                                                                                        ' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_m
+[2988] 07 Feb 17:09:42.582 * The server is now ready to accept connections on po
+Shell
+
+检查Redis是否正在工作
+
+[yiibai@ubuntu:~]$ redis-cli
+Shell
+
+这将打开一个redis提示，如下所示 -
+
+redis 127.0.0.1:6379>
+Shell
+
+在上面的提示中，127.0.0.1是计算机的IP地址，6379是运行Redis服务器的端口。 现在键入以下PING命令。
+
+redis 127.0.0.1:6379> ping 
+PONG
+Shell
+
+这表明Redis已成功在您的计算机上安装了。
+
+在Ubuntu上安装Redis桌面管理
+
+要在Ubuntu上安装Redis桌面管理器，可从 http://redisdesktop.com/download 下载该软件包，安装即可。
+
+打开下载的软件包并安装。
+
+Redis桌面管理器将提供用于管理Redis的键和数据的UI。
+2. Redis配置
+
+在Redis中，在Redis的根目录下有一个配置文件(redis.conf)。当然您可以通过Redis CONFIG命令获取和设置所有的Redis配置。
+
+语法
+以下是Redis中的CONFIG命令的基本语法。
+
+redis 127.0.0.1:6379> CONFIG GET CONFIG_SETTING_NAME
+Shell
+
+示例
+
+redis 127.0.0.1:6379> CONFIG GET loglevel  
+1) "loglevel" 
+2) "notice"
+Shell
+
+    要获取所有配置设置，请使用*代替CONFIG_SETTING_NAME
+
+示例
+
+redis 127.0.0.1:6379> CONFIG GET *
+  1) "dbfilename"
+  2) "dump.rdb"
+  3) "requirepass"
+  4) ""
+  5) "masterauth"
+  6) ""
+  7) "unixsocket"
+  8) ""
+  9) "logfile"
+ 10) "/var/log/redis/redis-server.log"
+ 11) "pidfile"
+ 12) "/var/run/redis/redis-server.pid"
+ 13) "maxmemory"
+ 14) "3221225472"
+ 15) "maxmemory-samples"
+ 16) "3"
+ 17) "timeout"
+ 18) "0"
+ 19) "tcp-keepalive"
+ 20) "0"
+ 21) "auto-aof-rewrite-percentage"
+ 22) "100"
+ 23) "auto-aof-rewrite-min-size"
+ 24) "67108864"
+ 25) "hash-max-ziplist-entries"
+ 26) "512"
+ 27) "hash-max-ziplist-value"
+ 28) "64"
+ 29) "list-max-ziplist-entries"
+ 30) "512"
+ 31) "list-max-ziplist-value"
+ 32) "64"
+ 33) "set-max-intset-entries"
+ 34) "512"
+ 35) "zset-max-ziplist-entries"
+ 36) "128"
+ 37) "zset-max-ziplist-value"
+ 38) "64"
+ 39) "lua-time-limit"
+ 40) "5000"
+ 41) "slowlog-log-slower-than"
+ 42) "10000"
+ 43) "slowlog-max-len"
+ 44) "128"
+ 45) "port"
+ 46) "6379"
+ 47) "databases"
+ 48) "16"
+ 49) "repl-ping-slave-period"
+ 50) "10"
+ 51) "repl-timeout"
+ 52) "60"
+ 53) "repl-backlog-size"
+ 54) "1048576"
+ 55) "repl-backlog-ttl"
+ 56) "3600"
+ 57) "maxclients"
+ 58) "3984"
+ 59) "watchdog-period"
+ 60) "0"
+ 61) "slave-priority"
+ 62) "100"
+ 63) "min-slaves-to-write"
+ 64) "0"
+ 65) "min-slaves-max-lag"
+ 66) "10"
+ 67) "hz"
+ 68) "10"
+ 69) "no-appendfsync-on-rewrite"
+ 70) "no"
+ 71) "slave-serve-stale-data"
+ 72) "yes"
+ 73) "slave-read-only"
+ 74) "yes"
+ 75) "stop-writes-on-bgsave-error"
+ 76) "yes"
+ 77) "daemonize"
+ 78) "yes"
+ 79) "rdbcompression"
+ 80) "yes"
+ 81) "rdbchecksum"
+ 82) "yes"
+ 83) "activerehashing"
+ 84) "yes"
+ 85) "repl-disable-tcp-nodelay"
+ 86) "no"
+ 87) "aof-rewrite-incremental-fsync"
+ 88) "yes"
+ 89) "appendonly"
+ 90) "no"
+ 91) "dir"
+ 92) "/var/lib/redis"
+ 93) "maxmemory-policy"
+ 94) "noeviction"
+ 95) "appendfsync"
+ 96) "everysec"
+ 97) "save"
+ 98) "900 1 300 10 60 10000"
+ 99) "loglevel"
+100) "notice"
+101) "client-output-buffer-limit"
+102) "normal 0 0 0 slave 268435456 67108864 60 pubsub 33554432 8388608 60"
+103) "unixsocketperm"
+104) "0"
+105) "slaveof"
+106) ""
+107) "notify-keyspace-events"
+108) ""
+109) "bind"
+110) "127.0.0.1"
+Shell
+
+编辑配置
+
+要更新配置，可以直接编辑redis.conf文件，也可以通过CONFIG set命令更新配置。
+
+语法
+以下是CONFIG SET命令的基本语法。
+
+redis 127.0.0.1:6379> CONFIG SET CONFIG_SETTING_NAME NEW_CONFIG_VALUE
+Shell
+
+示例
+
+redis 127.0.0.1:6379> CONFIG SET loglevel "notice" 
+OK 
+redis 127.0.0.1:6379> CONFIG GET loglevel  
+1) "loglevel" 
+2) "notice"

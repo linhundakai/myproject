@@ -1,0 +1,22 @@
+Nginx的高级配置（优化）
+针对内核的配置优化
+
+1）net.core.netdev_max_backlog 表示当网络接口接收数据包的速度大于内核处理这些包块的时候，允许发送到队列的数据包的最大数目；
+2）Net.ipv4.tcp_max_orphans最多允许多少个套接子不被关联到任何一个用户文件句柄上，只是为了预防简单的DOS攻击。一般系统内存大的时候可以增大这个值。
+3）Net.ipv4.tcp_synack_retires.用来设置内核放弃TCP连接之前向客户端发送SYN+ACK的数量，一般是1；
+4）Net.ipv4.tcp_timestamps用来设置时间戳这样避免序列号的卷绕。为0 时仅用TCP的时间戳的支持，
+针对CPU的nginx的两个配置
+
+1）worker_processes用来设置nginx服务的进程数目。一般与CPU的数目相同，进程间切换代价比较小；
+2）Worker_cpu_affinity用来为每个进程分配CPU的工作内核。
+与网络连接的配置
+
+1）keepalive_timeout用来设置nginx服务器与客户端保持连接的超时时间
+2）Send_timeout：用于设置某次会话中服务器等待客户端响应的超时时间；
+3）Client_header_buffer_size:用来设置服务器允许客户端请求头部的缓冲区的大小；
+4）Multi_accept用来配置nginx服务器是否可能多地接收客户端的连接请求，默认值为off
+与事件模型相关
+
+1)use:用于指定nginx服务器使用的事件驱动类型use epoll;
+2)Worker_connections:用来设置每个工作进程允许同时连接客户端的最大数量；
+3)Epoll_events用来设置epoll事件驱动模式下nginx服务器与内核之间传递事件的数量。

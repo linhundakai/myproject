@@ -1,0 +1,1970 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+     
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    
+<head>  
+
+    <script type="text/javascript" src="http://c.csdnimg.cn/pubfooter/js/tracking.js" charset="utf-8"></script>  
+
+    <script type="text/javascript">
+        var protocol = window.location.protocol;
+        document.write('<script type="text/javascript" src="' + protocol + '//csdnimg.cn/pubfooter/js/repoAddr2.js?v=' + Math.random() + '"></' + 'script>');
+    </script>
+
+  
+ <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+
+    <title>分布式缓存技术redis学习系列（二）——详细讲解redis数据结构（内存模型）以及常用命令 - javaloveiphone的专栏
+        - 博客频道 - CSDN.NET</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Redis数据类型与Memcached仅支持简单的key-value结构的数据记录不同，Redis支持的数据类型要丰富得多，常用的数据类型主要有五种：String、List、Hash、Set和Sorted Set。Redis数据类型内存结构分析Redis内部使用一个redisObject对象来表示所有的key和value。redisObject主要的信息包括数据类型（type）、编码方式(encod" />
+    <script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+      <script type="text/javascript" src="http://static.blog.csdn.net/scripts/jquery-version.js"></script>
+    <script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+        <!--new top-->
+               <link rel="stylesheet" href="http://c.csdnimg.cn/public/common/toolbar/css/index.css">        <!--new top-->
+    
+      <!-- ad begin -->
+         <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/tracking.js"></script>
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/light_blue/css/style.css?v=1.1" />
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/javaloveiphone/rss/list" />
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+ 
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?6bcd52f51e9b3dce32bec4a3997715ac";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+
+
+    <!-- 广告位开始 -->
+        <ins data-revive-zoneid="149" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="http://c.csdnimg.cn/public/common/toolbar/js/html.js" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/javaloveiphone">javaloveiphone的专栏</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/javaloveiphone?viewmode=contents"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/javaloveiphone?viewmode=list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/javaloveiphone/rss/list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "javaloveiphone";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/javaloveiphone";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod='popu_3' > 
+
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/61435419">
+<font color=red> CSDN日报20170311——《程序员每天累成狗，是为了什么》</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp
+
+<a href="http://blog.csdn.net/turingbooks/article/details/58072986">
+<font color=blue>程序员2月书讯
+</font></a>
+
+&nbsp;&nbsp;&nbsp;
+
+<a href="http://edu.csdn.net/huiyiCourse/detail/284?ref=blog&loc=r3">
+<font color=red>【直播】用面向协议的思想简化网络请求
+</font></a>
+&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/60961185">
+<font color=blue>博客一键搬家活动开始啦
+</font></a>
+
+</div>                        </div>
+                        
+
+
+
+  
+<link href="http://static.blog.csdn.net/css/comment1.css" type="text/css" rel="stylesheet" />
+<link href="http://static.blog.csdn.net/css/style1.css" type="text/css" rel="stylesheet" />
+<script language='JavaScript' type='text/javascript' src='http://download.csdn.net/js/jquery.cookie.js'></script>
+<script type="text/javascript" src="http://c.csdnimg.cn/rabbit/search-service/main.js"></script>
+<link rel="stylesheet" href="http://static.blog.csdn.net/public/res-min/markdown_views.css?v=1.0" />
+<link rel="stylesheet" href="http://static.blog.csdn.net/css/category.css?v=1.0" />
+<script type="text/javascript" src="http://static.blog.csdn.net/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/web-storage-cache.min.js"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/replace.min.js"></script>
+
+
+
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+           
+            var isBole = false;
+            
+      
+      var fasrc="http://my.csdn.net/my/favorite/miniadd?t=%e5%88%86%e5%b8%83%e5%bc%8f%e7%bc%93%e5%ad%98%e6%8a%80%e6%9c%afredis%e5%ad%a6%e4%b9%a0%e7%b3%bb%e5%88%97%ef%bc%88%e4%ba%8c%ef%bc%89%e2%80%94%e2%80%94%e8%af%a6%e7%bb%86%e8%ae%b2%e8%a7%a3redis%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%ef%bc%88%e5%86%85%e5%ad%98%e6%a8%a1%e5%9e%8b%ef%bc%89%e4%bb%a5%e5%8f%8a%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4&u=http://blog.csdn.net/javaloveiphone/article/details/52316609"
+
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Repost"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="/javaloveiphone/article/details/52316609">
+        分布式缓存技术redis学习系列（二）——详细讲解redis数据结构（内存模型）以及常用命令            
+        </a></span>
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href='http://www.csdn.net/tag/redis' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">redis</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2016-08-25 17:26</span>
+            <span class="link_view" title="阅读次数">288人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="#comments" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(0)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle('%e5%88%86%e5%b8%83%e5%bc%8f%e7%bc%93%e5%ad%98%e6%8a%80%e6%9c%afredis%e5%ad%a6%e4%b9%a0%e7%b3%bb%e5%88%97%ef%bc%88%e4%ba%8c%ef%bc%89%e2%80%94%e2%80%94%e8%af%a6%e7%bb%86%e8%ae%b2%e8%a7%a3redis%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%ef%bc%88%e5%86%85%e5%ad%98%e6%a8%a1%e5%9e%8b%ef%bc%89%e4%bb%a5%e5%8f%8a%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4','52316609');return false;" title="收藏">收藏</a></span>
+             <span class="link_report"> <a href="#report" onclick="javascript:report(52316609,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>
+    <div class="embody"  style="display:none" id="embody">
+        <span class="embody_t">本文章已收录于：</span>
+        <div class="embody_c" id="lib" value="{&quot;err&quot;:0,&quot;msg&quot;:&quot;ok&quot;,&quot;data&quot;:[]}"></div>
+    </div>
+    <style type="text/css">        
+            .embody{
+                padding:10px 10px 10px;
+                margin:0 -20px;
+                border-bottom:solid 1px #ededed;                
+            }
+            .embody_b{
+                margin:0 ;
+                padding:10px 0;
+            }
+            .embody .embody_t,.embody .embody_c{
+                display: inline-block;
+                margin-right:10px;
+            }
+            .embody_t{
+                font-size: 12px;
+                color:#999;
+            }
+            .embody_c{
+                font-size: 12px;
+            }
+            .embody_c img,.embody_c em{
+                display: inline-block;
+                vertical-align: middle;               
+            }
+             .embody_c img{               
+                width:30px;
+                height:30px;
+            }
+            .embody_c em{
+                margin: 0 20px 0 10px;
+                color:#333;
+                font-style: normal;
+            }
+    </style>
+    <script  type="text/javascript">
+        $(function () {
+            try
+            {
+                var lib = eval("("+$("#lib").attr("value")+")");
+                var html = "";
+                if (lib.err == 0) {
+                    $.each(lib.data, function (i) {
+                        var obj = lib.data[i];
+                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                        html += ' <a href="' + obj.url + '" target="_blank">';
+                        html += ' <img src="' + obj.logo + '">';
+                        html += ' <em><b>' + obj.name + '</b></em>';
+                        html += ' </a>';
+                    });
+                    if (html != "") {
+                        setTimeout(function () {
+                            $("#lib").html(html);                      
+                            $("#embody").show();
+                        }, 100);
+                    }
+                }      
+            } catch (err)
+            { }
+            
+        });
+    </script>
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="http://static.blog.csdn.net/images/category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label  onclick="GetCategoryArticles('6383102','javaloveiphone','top','52316609');">
+                        <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">redis<em>（10）</em></span>
+                      <img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="http://static.blog.csdn.net/images/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a  href="http://blog.csdn.net/javaloveiphone/article/category/6383102"  target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_6383102">                            
+                            </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+    <script   type="text/javascript" src="http://static.blog.csdn.net/scripts/category.js"></script>  
+
+  
+
+  
+  
+     
+
+<div id="article_content" class="article_content">
+        <div class="markdown_views"><h2 id="redis数据类型"><font color="#000000">Redis数据类型</font></h2>
+
+<p>与Memcached仅支持简单的key-value结构的数据记录不同，Redis支持的数据类型要丰富得多，<font color="red">常用的数据类型主要有五种：String、List、Hash、Set和Sorted Set</font>。</p>
+
+<h3 id="redis数据类型内存结构分析"><font color="#000000">Redis数据类型内存结构分析</font></h3>
+
+<p><font color="red">Redis内部使用一个redisObject对象来表示所有的key和value</font>。redisObject主要的信息包括数据类型（type）、编码方式(encoding)、数据指针（ptr）、虚拟内存（vm）等。type代表一个value对象具体是何种数据类型，encoding是不同数据类型在redis内部式。</p>
+
+<p><img src="http://img.blog.csdn.net/20160825170042325" alt="redisObject 对象示意图" title=""></p>
+
+<p>下面分别介绍5种数据类型的用法。</p>
+
+<h3 id="string类型"><font color="#000000">String类型</font></h3>
+
+<p>字符串是Redis值的最基础的类型。<font color="red">Redis中使用的字符串是通过包装的，基于c语言字符数组实现的简单动态字符串(simple dynamic string, SDS)一个抽象数据结构</font>。其源码定义如下：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs cpp"><span class="hljs-keyword">struct</span> sdshdr {
+    <span class="hljs-keyword">int</span> len; <span class="hljs-comment">//len表示buf中存储的字符串的长度。</span>
+    <span class="hljs-keyword">int</span> <span class="hljs-built_in">free</span>; <span class="hljs-comment">//free表示buf中空闲空间的长度。</span>
+    <span class="hljs-keyword">char</span> buf[]; <span class="hljs-comment">//buf用于存储字符串内容。</span>
+};</code></pre>
+
+<p><img src="http://img.blog.csdn.net/20160825170157883" alt="C语言字符串内存结构示意图1" title=""></p>
+
+<p>假设上图是”hello”字符串的内存结构，这个时候len=5，free=2那么redis包装后（sds）其长度为：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs cpp"><span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">struct</span> sdshdr) + len + <span class="hljs-built_in">free</span> + <span class="hljs-number">1</span></code></pre>
+
+<p>其中buf的大小为：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver"><span class="hljs-built_in">len</span> + free + <span class="hljs-number">1</span></code></pre>
+
+<p>1表示1个字节是用来存储结束符’\0’的。<font color="red">Redis字符串是二进制安全的</font>，因为二进制数据通常会有中间某个字节存储’\0’的这种情况，这意味着一个Redis字符串可以包含任何种类的数据，例如一个JPEG图像或者一个序列化的Ruby对象。二进制是否安全，简单的理解就是能不能在字符串中间有‘\0’,如下图: <br>
+<img src="http://img.blog.csdn.net/20160825170306672" alt="C语言字符串内存结构示意图2" title=""></p>
+
+<p>对于上图，sds认为这个字符串是“hello world”,而C语言的字符处理函数认为这个字符串是“hello”。</p>
+
+<h3 id="应用场景"><font color="#000000">应用场景</font></h3>
+
+<p>String是最常用的一种数据类型，普通的key/value存储都可以归为此类。</p>
+
+<h3 id="常用命令"><font color="#000000">常用命令</font></h3>
+
+<p>（1）set——设置key对应的值为String类型的value <br>
+（2）get——获取key对应的值</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs applescript"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; setnx <span class="hljs-property">name</span> lisi
+(<span class="hljs-type">integer</span>) <span class="hljs-number">0</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; setnx name1 wangwu
+(<span class="hljs-type">integer</span>) <span class="hljs-number">1</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; <span class="hljs-keyword">get</span> <span class="hljs-property">name</span>
+<span class="hljs-string">"zhangsan"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; <span class="hljs-keyword">get</span> name1
+<span class="hljs-string">"wangwu"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（3）mget——批量获取多个key的值，如果可以不存在则返回nil</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs applescript"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; mget <span class="hljs-property">name</span> name1
+<span class="hljs-number">1</span>) <span class="hljs-string">"zhangsan"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"wangwu"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; mget <span class="hljs-property">name</span> name1 name2
+<span class="hljs-number">1</span>) <span class="hljs-string">"zhangsan"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"wangwu"</span>
+<span class="hljs-number">3</span>) (nil)
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（4）incr &amp;&amp; incrby——incr对key对应的值进行加加操作，并返回新的值;incrby加指定值</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver">
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; <span class="hljs-built_in">get</span> age
+<span class="hljs-string">"20"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; incr age
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">21</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; <span class="hljs-built_in">set</span> age1 <span class="hljs-string">"20"</span>
+OK
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; <span class="hljs-built_in">get</span> age1
+<span class="hljs-string">"20"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; incr age1
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">21</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; incrby age <span class="hljs-number">3</span>
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">24</span></code></pre>
+
+<p>从上面的结果可以看出，我们对int型的age和string型的age1都能进行incr操作时， <br>
+实际上type=string代表value存储的是一个普通字符串，那么对应的encoding可以是raw或者是int，如果是int则代表实际redis内部是按数值型类存储和表示这个字符串的，当然前提是这个字符串本身可以用数值表示，比如”20”这样的字符串，当遇到incr、decr等操作时会转成数值型进行计算，此时redisObject的encoding字段为int。如果你试图对name进行incr操作则报错。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs vhdl"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; incr name
+(error) ERR value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> an <span class="hljs-typename">integer</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">out</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">range</span></code></pre>
+
+<p>（5）decr &amp;&amp; decrby——decr对key对应的值进行减减操作，并返回新的值;decrby减指定值</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs css">192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.129</span><span class="hljs-pseudo">:6379</span>&gt; <span class="hljs-tag">decr</span> <span class="hljs-tag">age</span>
+(<span class="hljs-tag">integer</span>) 23
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.129</span><span class="hljs-pseudo">:6379</span>&gt; <span class="hljs-tag">decrby</span> <span class="hljs-tag">age</span> 3
+(<span class="hljs-tag">integer</span>) 20
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.129</span><span class="hljs-pseudo">:6379</span>&gt;</code></pre>
+
+<p>（6）其他命令</p>
+
+<table class="MsoNormalTable" align="center">
+<tbody>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>命令</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>说明</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>setnx</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><a><span><span>设置key对应的值为String类型的value</span></span></a></span><span><span><span><span>，</span></span><span><span>如果key已经存在则返回0</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>setex</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>设置key对应的值为String类型的value</span></span><span><span>，</span></span><span><span>并设定有效期</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>setrange</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><a><span><span><span>设置key对应value的子字符串</span></span></span></a></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span><span>get</span></span><span><span>range</span></span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>获取key对应value的子字符串</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>mset</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>批量设置多个key的值，如果成功表示所有值都被设置，否则返回0表示没有任何值被设置</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>msetnx</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>同mset，不存在就设置，不会覆盖已有的key</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>getset</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>设置key的值，并返回key旧的值</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>append</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>给指定key的value追加字符串，并返回新字符串的长度</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>strlen</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>取指定key的value的长度</span></span></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="hash类型"><font color="#000000">Hash类型</font></h3>
+
+<p>Hash是一个String类型的field和value之间的映射表，<font color="red">即redis的Hash数据类型的key（hash表名称）对应的value实际的内部存储结构为一个HashMap，因此Hash特别适合存储对象</font>。相对于把一个对象的每个属性存储为String类型，将<font color="red">整个对象存储在Hash类型中会占用更少内存</font>。</p>
+
+<p><img src="http://img.blog.csdn.net/20160825170557239" alt="Hash 数据类型内部结构示意图" title=""></p>
+
+<p>当前HashMap的实现有两种方式：当HashMap的成员比较少时Redis为了节省内存会采用类似一维数组的方式来紧凑存储，而不会采用真正的HashMap结构，这时对应的value的redisObject的encoding为zipmap，当成员数量增大时会自动转成真正的HashMap,此时encoding为ht。</p>
+
+<h3 id="应用场景-1"><font color="#000000">应用场景</font></h3>
+
+<p>用一个对象来存储用户信息，商品信息，订单信息等等。</p>
+
+<h3 id="常用命令-1"><font color="#000000">常用命令</font></h3>
+
+<p>（1）hset——设置key对应的HashMap中的field的value <br>
+（2）hget——获取key对应的HashMap中的field的value</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs applescript"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; hset myhash <span class="hljs-property">name</span> zhangsan
+(<span class="hljs-type">integer</span>) <span class="hljs-number">1</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; hset myhash age <span class="hljs-number">20</span>
+(<span class="hljs-type">integer</span>) <span class="hljs-number">1</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; hget myhash <span class="hljs-property">name</span>
+<span class="hljs-string">"zhangsan"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; hget myhash age
+<span class="hljs-string">"20"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（3）hgetall——获取key对应的HashMap中的所有field的value</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs bash"><span class="hljs-number">192.168</span>.<span class="hljs-number">2.129</span>:<span class="hljs-number">6379</span>&gt; hgetall myhash
+<span class="hljs-number">1</span>) <span class="hljs-string">"name"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"zhangsan"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"age"</span>
+<span class="hljs-number">4</span>) <span class="hljs-string">"20"</span>
+<span class="hljs-number">192.168</span>.<span class="hljs-number">2.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（4）其它命令</p>
+
+<table class="MsoNormalTable" align="center">
+<tbody>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>命令</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>说明</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hsetnx</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><a><span><span>设置</span></span></a><span><a><span>key对应的HashMap中的field的valu</span></a></span><span><span>e，如果不存在则先创建</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hmset</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><a><span><span><span>批量设置key对应的HashMap中的field的value</span></span></span></a></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hmget</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>批量获取key对应的HashMap中的field的value</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hincrby</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>给</span></span><span><a><span>key对应的HashMap中的field</span></a></span><span><span>的value加指定的值</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hexists</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>测试</span></span><span><span><a><span>key对应的HashMap中的field</span></a>是否存在</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hlen</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><a><span><span><span>返回key对应的HashMap中的field的数量</span></span></span></a></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hdel</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>删除key对应的HashMap中的field</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hkeys</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><a><span><span><span>返回key对应的HashMap中所有的field</span></span></span></a></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>hvals</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>返回key对应的HashMap中所有的field的value</span></span></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="list类型"><font color="#000000">List类型</font></h3>
+
+<p><font color="red">Redis的List类型其实就是每一个元素都是String类型的双向链表</font>。我们可以从链表的头部和尾部添加或者删除元素。这样的List既可以作为栈，也可以作为队列使用。</p>
+
+<p><img src="http://img.blog.csdn.net/20160825170635119" alt="List数据结构内部示意图" title=""></p>
+
+<h3 id="应用场景-2"><font color="#000000">应用场景</font></h3>
+
+<p>如好友列表，粉丝列表，消息队列，最新消息排行等。</p>
+
+<h3 id="常用命令-2"><font color="#000000">常用命令</font></h3>
+
+<p>（1）lpush——在key对应的list的头部添加一个元素。 <br>
+（2）lrange——获取key对应的list的指定下标范围的元素，-1表示获取所有元素。 <br>
+（3）lpop——从key对应的list的头部删除一个元素，并返回该元素。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; lpush newlist news1 news2 news3
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">3</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; lrange newlist <span class="hljs-number">0</span> -<span class="hljs-number">1</span>
+<span class="hljs-number">1</span>) <span class="hljs-string">"news3"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news2"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"news1"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; lpop newlist
+<span class="hljs-string">"news3"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; lrange newlist <span class="hljs-number">0</span> -<span class="hljs-number">1</span>
+<span class="hljs-number">1</span>) <span class="hljs-string">"news2"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news1"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>从上面的操作可以看出，<font color="red">lpush、lpop从表头操作</font>。 <br>
+<img src="http://img.blog.csdn.net/20160825171208153" alt="这里写图片描述" title=""></p>
+
+<p>（4）rpush——在key对应的list的尾部添加一个元素。 <br>
+（5）rpop——从key对应的list的尾部删除一个元素，并返回该元素。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; rpush newlist2 news1 news2 news3
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">3</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; lrange newlist2 <span class="hljs-number">0</span> -<span class="hljs-number">1</span>
+<span class="hljs-number">1</span>) <span class="hljs-string">"news1"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news2"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"news3"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; rpop newlist2
+<span class="hljs-string">"news3"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>从上面的操作可以看出，<font color="red">rpush、rpop从表尾操作</font>。 <br>
+<img src="http://img.blog.csdn.net/20160825171252887" alt="这里写图片描述" title=""></p>
+
+<p>（6）其他命令</p>
+
+<table class="MsoNormalTable" align="center">
+<tbody>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>命令</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>说明</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>linsert</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>在</span></span><span><a><span>key对应的list的</span></a></span><span><span>特定元素的前或后插入元素</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>lset</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>设置</span></span><span><span><a><span>key对应的list中</span></a>指定下标元素的值</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>lrem</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>从</span></span><span><span><a><span>key对应的list中</span></a>删除n个和value相同的元素</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>ltrim</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>保留</span></span><span><span>key对应的list中指定范围的元素</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>rpoplpush</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>从第一个list的尾部移除一个元素并添加到第二个list的头部</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>llen</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><a><span><span>返回key对应的list的</span></span></a><span><span>长度</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>lindex</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>返回key对应的list中index的元素</span></span></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="set类型"><font color="#000000">Set类型</font></h3>
+
+<p><font color="red">Redis 集合（Set类型）是一个无序的String类型数据的集合</font>，类似List的一个列表，与List不同的是Set<font color="red">不能有重复的数据</font>。实际上，<font color="red">Set的内部是用HashMap实现的，Set只用了HashMap的key列来存储对象</font>。我们来看看java中HashSet的源码：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs php"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HashSet</span>&lt;<span class="hljs-title">E</span>&gt;
+    <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractSet</span>&lt;<span class="hljs-title">E</span>&gt;
+    <span class="hljs-keyword">implements</span> <span class="hljs-title">Set</span>&lt;<span class="hljs-title">E</span>&gt;, <span class="hljs-title">Cloneable</span>, <span class="hljs-title">java</span>.<span class="hljs-title">io</span>.<span class="hljs-title">Serializable</span>
+{</span>
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> long serialVersionUID = -<span class="hljs-number">5024744406713321676</span>L;
+
+    <span class="hljs-keyword">private</span> transient HashMap&lt;E,Object&gt; map;
+
+    <span class="hljs-comment">// Dummy value to associate with an Object in the backing Map</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object PRESENT = <span class="hljs-keyword">new</span> Object();
+
+    <span class="hljs-comment">/**
+     * Constructs a new, empty set; the backing &lt;tt&gt;HashMap&lt;/tt&gt; instance has
+     * default initial capacity (16) and load factor (0.75).
+     */</span>
+   <span class="hljs-keyword">public</span> HashSet() {
+        map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+}
+......
+
+<span class="hljs-comment">/**
+     * Returns an iterator over the elements in this set.  The elements
+     * are returned in no particular order.
+     *
+     *<span class="hljs-phpdoc"> @return</span> an Iterator over the elements in this set
+     *<span class="hljs-phpdoc"> @see</span> ConcurrentModificationException
+     */</span>
+    <span class="hljs-keyword">public</span> Iterator&lt;E&gt; iterator() {
+        <span class="hljs-keyword">return</span> map.keySet().iterator();
+    }
+</code></pre>
+
+<p>可见创建一个HashSet的时候实际上创建了一个HashMap；Set中的元素，只是存放在了底层HashMap的key上，底层HashMap的value列为空，遍历HashSet的时候从HashMap中取出keySet来遍历。</p>
+
+<p><img src="http://img.blog.csdn.net/20160825171841405" alt="Set底层结构示意图" title=""></p>
+
+<h3 id="应用场景-3"><font color="#000000">应用场景</font></h3>
+
+<p>集合有取交集、并集、差集等操作，因此可以求共同好友、共同兴趣、分类标签等。</p>
+
+<h3 id="常用命令-3"><font color="#000000">常用命令</font></h3>
+
+<p>（1）sadd——在key对应的set中添加一个元素。 <br>
+（2）smembers——获取key对应的set的所有元素。 <br>
+（3）spop——随机返回并删除key对应的set中的一个元素。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; sadd myset news1 news2 news3
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">3</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; smembers myset
+<span class="hljs-number">1</span>) <span class="hljs-string">"news3"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news2"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"news1"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; spop myset
+<span class="hljs-string">"news3"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（4）sdiff——求给定key对应的set与第一个key对应的set的差集</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; smembers myset
+<span class="hljs-number">1</span>) <span class="hljs-string">"news3"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news2"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"news1"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; sadd myset2 news3 news4 news5
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">3</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; smembers myset2
+<span class="hljs-number">1</span>) <span class="hljs-string">"news4"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news3"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"news5"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; sdiff myset myset2
+<span class="hljs-number">1</span>) <span class="hljs-string">"news1"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news2"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（5）suion——求给定key对应的set并集</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs bash"><span class="hljs-number">192.168</span>.<span class="hljs-number">2.129</span>:<span class="hljs-number">6379</span>&gt; sunion myset myset2
+<span class="hljs-number">1</span>) <span class="hljs-string">"news3"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"news1"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"news2"</span>
+<span class="hljs-number">4</span>) <span class="hljs-string">"news4"</span>
+<span class="hljs-number">5</span>) <span class="hljs-string">"news5"</span>
+<span class="hljs-number">192.168</span>.<span class="hljs-number">2.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（6）sinter——求给定key对应的set交集</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs css">192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.129</span><span class="hljs-pseudo">:6379</span>&gt; <span class="hljs-tag">sinter</span> <span class="hljs-tag">myset</span> <span class="hljs-tag">myset2</span>
+1) "<span class="hljs-tag">news3</span>"
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.129</span><span class="hljs-pseudo">:6379</span>&gt;</code></pre>
+
+<p>（7）其他命令</p>
+
+<table class="MsoNormalTable" align="center">
+<tbody>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>命令</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>说明</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>srem</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>删除</span></span><span><span>key对应的set中的一个元素</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>sdiffstore</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span>求给定</span><a><span>key对应的set</span></a><span>与第一个key对应的set的差集，</span><a><span><span>并存储到另一个key对应的set中</span></span></a></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>sinterstore</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span>求给定key对应的set交集</span><a><span><span>，并存储到另一个key对应的set中</span></span></a></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>suionstore</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>求给定key对应的set并集，并存储到另一个key对应的set中</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>smove</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>从第一个</span></span><span><span>key对应的set中删除指定元素并添加到第二个key对应的set中</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>scard</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>返回</span></span><a><span><span><span>key对应的set的元素个数</span></span></span></a></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>sismember</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>测试某个元素是否为key对应的set中的元素个数</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>srandmember</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>随机返回key对应的set中的一个元素，但不删除元素</span></span></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="sortset"><font color="#000000">SortSet</font></h3>
+
+<p>SortSet顾名思义，是一个排好序的Set，它在Set的基础上增加了一个顺序属性score，这个属性在添加修改元素时可以指定，每次指定后，SortSet会自动重新按新的值排序。 <br>
+sorted set的内部使用HashMap和跳跃表(SkipList)来保证数据的存储和有序，HashMap里放的是成员到score的映射，而跳跃表里存放的是所有的成员，排序依据是HashMap里存的score。</p>
+
+<h3 id="应用场景-4"><font color="#000000">应用场景</font></h3>
+
+<p>如按时间排序的时间轴。</p>
+
+<h3 id="常用命令-4"><font color="#000000">常用命令</font></h3>
+
+<p>（1）zadd ——在key对应的zset中添加一个元素 <br>
+（2）zrange——获取key对应的zset中指定范围的元素，-1表示获取所有元素</p>
+
+<pre class="prettyprint"><code class=" hljs livecodeserver"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; zadd myzset <span class="hljs-number">1</span> <span class="hljs-string">"one"</span> <span class="hljs-number">2</span> <span class="hljs-string">"two"</span> <span class="hljs-number">3</span> <span class="hljs-string">"three"</span>
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">3</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; zrange myzset <span class="hljs-number">0</span> -<span class="hljs-number">1</span>
+<span class="hljs-number">1</span>) <span class="hljs-string">"one"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"two"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"three"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; zrange myzset <span class="hljs-number">0</span> -<span class="hljs-number">1</span> withscores
+<span class="hljs-number">1</span>) <span class="hljs-string">"one"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"1"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"two"</span>
+<span class="hljs-number">4</span>) <span class="hljs-string">"2"</span>
+<span class="hljs-number">5</span>) <span class="hljs-string">"three"</span>
+<span class="hljs-number">6</span>) <span class="hljs-string">"3"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（3）zrem——删除key对应的zset中的一个元素</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; zrem myzset <span class="hljs-constant">one</span>
+(<span class="hljs-keyword">integer</span>) <span class="hljs-number">1</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt; zrange myzset <span class="hljs-number">0</span> -<span class="hljs-number">1</span> withscores
+<span class="hljs-number">1</span>) <span class="hljs-string">"two"</span>
+<span class="hljs-number">2</span>) <span class="hljs-string">"2"</span>
+<span class="hljs-number">3</span>) <span class="hljs-string">"three"</span>
+<span class="hljs-number">4</span>) <span class="hljs-string">"3"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.129</span>:<span class="hljs-number">6379</span>&gt;</code></pre>
+
+<p>（4）其它命令</p>
+
+<table class="MsoNormalTable" align="center">
+<tbody>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>命令</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>说明</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>zincrby</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span>如果key对应的zset中已经存在元素</span><a><span>member</span></a><span><span>，则对member的score属性加指定的值</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>zrank</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span>返回key对应的zset中指定</span><a><span>member</span></a><span><span>的排名。其中member按score值递增</span></span></span><span><span><span><span>(从小到大）</span></span></span><span><span><span>；排名以0为底，也就是说，score值最小的成员排名为0</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>zrevrank</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span><span>获得成员按score值递减</span></span></span><span><span><span>(从大到小)</span></span></span><span><span>排列的排名</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>zrevrange</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span>返回</span><a><span>有序集key中，指定区间内的成员</span></a><span><span>。其中成员的位置按score值递减</span></span></span><span><span><span><span>(从大到小)</span></span></span><span><span><span>来排列</span></span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><a><span><span>zrangebyscore</span></span></a></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>返回有序集key中，指定分数范围的元素列表</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>zcount</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>返回有序集key中，score值在min和max之间(默认包括score值等于min或max)的成员</span></span></span></p>
+</td>
+</tr>
+<tr>
+<td valign="middle" width="112">
+<p class="MsoNormal" align="center"><span><span><span>zcard</span></span></span></p>
+</td>
+<td valign="middle" width="432">
+<p class="MsoNormal" align="center"><span><span><span>返回key的有序集元素个数</span></span></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="redis常用命令"><font color="#000000">Redis常用命令</font></h2>
+
+<h3 id="键值常用命令"><font color="#000000">键值常用命令</font></h3>
+
+<p>keys/exits/del/expire/ttl/move/persist/randomkey/rename/type</p>
+
+<h3 id="服务器常用命令"><font color="#000000">服务器常用命令</font></h3>
+
+<p>ping/echo/select/quit/dbsize/info/config get/flushdb/flushall</p>
+
+<p>这些命令都很容易使用，就不举例说明了。到此，redis的数据类型以及常用命令已经介绍完毕，下一篇我们将学习redis的一些高级特性。</p>
+
+<p>转载来源：<a href="http://www.cnblogs.com/hjwublog/p/5639990.html">http://www.cnblogs.com/hjwublog/p/5639990.html</a></p></div>
+        <script  type="text/javascript">
+            $(function () {
+                $('pre.prettyprint code').each(function () {
+                    var lines = $(this).text().split('\n').length;
+                    var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                    $(this).addClass('has-numbering').parent().append($numbering);
+                    for (i = 1; i <= lines; i++) {
+                        $numbering.append($('<li/>').text(i));
+                    };
+                    $numbering.fadeIn(1700);
+                });
+            });
+        </script>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad" style="float: right;" data-mod="popu_172">
+<a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"  style="background-position:0 -52px !important"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"style="background-position:0 -104px !important"></a>
+<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"style="background-position:0 -260px !important"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"style="background-position:0 -208px !important"></a>
+<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"style="background-position:0 -1612px !important" ></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   <link rel="stylesheet" href="http://static.blog.csdn.net/css/blog_detail.css" />
+
+    
+<!--172.16.140.15-->
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+ 
+
+
+        <div id="digg" ArticleId="52316609" >
+            <dl id="btnDigg" class="digg digg_disable"  onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>0</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_disable"  onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>0</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" >&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" >&nbsp;</a></div>
+    <script type="text/javascript">
+                function btndigga() {
+                    $(".tracking-ad[data-mod='popu_222'] a").click();
+                }
+                function btnburya() {
+                    $(".tracking-ad[data-mod='popu_223'] a").click();
+                }
+            </script>
+
+   <ul class="article_next_prev">
+                <li class="prev_article"><span  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='/javaloveiphone/article/details/52302661';">上一篇</span><a href="/javaloveiphone/article/details/52302661" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">分布式缓存技术redis学习系列（一）——redis简介以及linux上的安装以及操作redis问题整理</a></li>
+                <li class="next_article"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='/javaloveiphone/article/details/52327240';">下一篇</span><a href="/javaloveiphone/article/details/52327240" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian'])">分布式缓存技术redis学习系列（三）——redis高级应用（主从、事务与锁、持久化）</a></li>
+    </ul>
+
+    <div style="clear:both; height:10px;"></div>
+
+
+        <div class="similar_article"  style="display:none">
+                <h4>我的同类文章</h4>
+                <div class="similar_c"style="margin:20px 0px 0px 0px">
+                    <div class="similar_c_t">
+                                <label class="similar_cur">
+                                    <span  style="cursor:pointer"  onclick="GetCategoryArticles('6383102','javaloveiphone','foot','52316609');">redis<em>（10）</em></span>
+                                </label>
+                    </div>
+                   
+                    <div class="similar_wrap tracking-ad" data-mod="popu_141"  style="max-height:195px;">
+                        <a href="http://blog.csdn.net" style="display:none">http://blog.csdn.net</a>
+                        <ul class="similar_list fl">                          
+                        </ul>
+
+                        <ul class="similar_list fr">                           
+                        </ul>
+                    </div>
+                </div>
+            </div>    
+    <script  type="text/javascript">
+        $(function () {
+            GetCategoryArticles('6383102', 'javaloveiphone','foot','52316609');
+        });
+    </script>
+      
+</div>
+
+     <div>
+             <ins data-revive-zoneid="206" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins> 
+    </div>
+
+<div id="suggest"></div>
+         <script  language="javascript" type='text/javascript'>     
+             $(function(){
+                 $.get("/javaloveiphone/svc/GetSuggestContent/52316609",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+
+<style>
+.blog-ass-articl dd {
+color: #369;
+width: 99%; /*修改行*/
+float: left;
+overflow: hidden;
+font: normal normal 12px/23px "SimSun";
+height: 23px;
+margin: 0;
+padding: 0 0 0 10px;
+margin-right: 30px;
+background: url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;
+}
+</style>
+
+ <link rel="stylesheet" href="http://static.blog.csdn.net/css/replace.css"/>
+<div id="relate" data-mod="popu_218"  class="tracking-ad">
+        <div class="relate_t">
+            <h3><span>参考知识库</span></h3>
+        </div>
+        <div class="relate_c">
+        </div>
+</div>
+ 
+
+<dl class="blog-ass-articl" id="res-relatived" > 
+    <div class="embody embody_b" id="libkeyparent"  style="display:none">
+            <span class="embody_t">更多资料请参考：</span>
+            <div class="embody_c" id="libkey"></div>
+    </div>
+
+
+     <dt><span>猜你在找</span></dt>    
+
+
+   
+
+
+    <div id="adCollege" style="width: 42%;float: left;"> 
+        <script src="http://csdnimg.cn/jobreco/job_reco.js" type="text/javascript"></script> 
+        <script type="text/javascript">
+            csdn.position.showEdu({
+                sourceType: "blog",
+                searchType: "detail",
+                searchKey: "52316609",
+                username: "",
+                recordcount: "5",
+                containerId: "adCollege" //容器DIV的id。 
+            });
+            
+            setEduLoc();
+
+            function setEduLoc() {               
+                var edus = $("#adCollege div dd a");
+                if (edus.length == 0) {
+                    setTimeout(function () {
+                        setEduLoc();
+                    }, 500);
+                }
+                else {
+                    var eduLoc = "?ref=blog&loc=0";
+                    $.each(edus, function (index,item) {
+                        var href = $(this).attr("href") + eduLoc;
+                        $(this).attr("href", href);
+                    });
+                }
+            }
+
+        </script> 
+    </div>  
+
+    
+     <div id="res"  data-mod="popu_36"  class="tracking-ad" style="width: 42%;float: left;margin-right: 30px;"></div>
+   
+</dl>
+
+
+<script type="text/javascript">
+    $(function () {
+        setTimeout(function () {
+            var searchtitletags = '分布式缓存技术redis学习系列（二）——详细讲解redis数据结构（内存模型）以及常用命令' + ',' + $("#tags").html();
+            searchService({
+                index: 'blog',
+                query: searchtitletags,
+                from: 5,
+                size: 5,
+                appendTo: '#res',
+                url: 'recommend',
+                his: 2,
+                client: "blog_cf_enhance",
+                tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+            });
+        }, 500);
+    });    
+
+ </script>  
+
+
+    <div id="ad_cen">        
+                      <ins data-revive-zoneid="199" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    </div>  
+
+    <!-- 广告位开始 -->
+    <ins data-revive-zoneid="72" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    <!-- 广告位结束 -->
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list">
+    </div>
+    <div id="comment_bar">
+    </div>
+    <div id="comment_form">
+    </div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '52316609';
+    var commentscount = 0;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top"  style="bottom:60px;">
+
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="http://static.blog.csdn.net/images/blog-icon-reply.png" alt="快速回复">
+        </a>    
+    <a id="d-top-a" class="btn btn-top backtop"  style="display: none;" title="返回顶部" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])" style="">         
+         <img src="http://static.blog.csdn.net/images/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+<div class="tag_list" style="display:none"></div>
+  <script  language="javascript" type='text/javascript'>     
+      $(function(){
+              setTimeout(function(){
+                  $.get("/javaloveiphone/svc/GetTagContent",function(data){
+                      $(".tag_list").html(data).show();
+                  });     
+              });
+          },500);                       
+ </script> 
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });         
+
+        },200);  
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }   
+
+</script>
+ <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/async_new.js"></script>      
+
+
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/javaloveiphone" target="_blank">
+    <img src="http://avatar.csdn.net/0/A/9/1_javaloveiphone.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/javaloveiphone" class="user_name" target="_blank">javaloveiphone</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter"  title="[发私信]" onclick="window.open('http://msg.csdn.net/letters/model?receiver=javaloveiphone','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+                                            <a  target="_blank">
+                                                    <img src="http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/chizhiyiheng.png" onmouseover="m_over_m(this,4)" onmouseout="m_out_m()" alt="2" >
+                                            </a>
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>403612次</span></li>
+    <li>积分：<span>5538</span> </li>    
+    <li >等级： <span style="position:relative;display:inline-block;z-index:1" >
+            <img src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog6.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：5538 </div>
+        </span>  </li>
+    <li>排名：<span>第3922名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>183篇</span></li>
+    <li>转载：<span>68篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>52条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字" /></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog" />
+        <input type="hidden" name="q" id="inputQ" />
+        <input type="hidden" name="t" value="blog" />
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";
+            window.location.href = url;
+        }   
+    });
+</script><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203223" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">tomcat</a><span>(9)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203224" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">oracle</a><span>(14)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203225" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">sqlserver</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203228" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">myeclipse</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203230" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">jdk</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203232" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">mysql</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203234" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">j2se</a><span>(34)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203236" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">windows系统</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203595" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">javaweb项目</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228134" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">js</a><span>(21)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228136" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">jquery</a><span>(9)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228150" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">OJNL</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228151" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">JSP</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228159" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">linux</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228161" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">struts2</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1233139" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">EL+JSTL</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1237833" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">异常</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1241072" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">log4j</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1265163" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">hibernate</a><span>(7)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1275136" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">servlet</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1275333" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Spring</a><span>(29)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1370162" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">webservice</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5817695" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">正则表达式</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5818471" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">easyui</a><span>(8)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5818473" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">css</a><span>(33)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5836809" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">javascript</a><span>(15)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5846463" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">form</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5846465" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">ajax</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6173829" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">html</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6334367" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Maven</a><span>(15)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6357168" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">quartz</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6367140" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Mybatis</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6368496" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Spring-MVC</a><span>(13)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6372567" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">dubbo</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6373253" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">zookeeper</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6383102" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">redis</a><span>(11)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6402196" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">sso</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6402197" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">cas</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6409608" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">eclipse</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6436924" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">多线程</a><span>(12)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6506669" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">nexus</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6544934" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">activeMQ</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6544935" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">JMS</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6632572" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">validate</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6727428" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">项目总结</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6745861" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">svn</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6775182" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">PDM</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6775183" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">CDM</a><span>(1)</span>
+                </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="/javaloveiphone/article/month/2017/03">2017年03月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2017/02">2017年02月</a><span>(10)</span></li><li><a href="/javaloveiphone/article/month/2017/01">2017年01月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2016/12">2016年12月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2016/11">2016年11月</a><span>(9)</span></li><li><a href="/javaloveiphone/article/month/2016/10">2016年10月</a><span>(2)</span></li><li><a href="/javaloveiphone/article/month/2016/09">2016年09月</a><span>(11)</span></li><li><a href="/javaloveiphone/article/month/2016/08">2016年08月</a><span>(34)</span></li><li><a href="/javaloveiphone/article/month/2016/07">2016年07月</a><span>(14)</span></li><li><a href="/javaloveiphone/article/month/2016/06">2016年06月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2016/04">2016年04月</a><span>(14)</span></li><li><a href="/javaloveiphone/article/month/2016/03">2016年03月</a><span>(11)</span></li><li><a href="/javaloveiphone/article/month/2016/01">2016年01月</a><span>(2)</span></li><li><a href="/javaloveiphone/article/month/2015/12">2015年12月</a><span>(15)</span></li><li><a href="/javaloveiphone/article/month/2015/11">2015年11月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2015/10">2015年10月</a><span>(12)</span></li><li><a href="/javaloveiphone/article/month/2015/09">2015年09月</a><span>(9)</span></li><li><a href="/javaloveiphone/article/month/2015/06">2015年06月</a><span>(4)</span></li><li><a href="/javaloveiphone/article/month/2015/05">2015年05月</a><span>(7)</span></li><li><a href="/javaloveiphone/article/month/2013/12">2013年12月</a><span>(1)</span></li><li><a href="/javaloveiphone/article/month/2013/11">2013年11月</a><span>(1)</span></li><li><a href="/javaloveiphone/article/month/2013/07">2013年07月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2013/04">2013年04月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2013/03">2013年03月</a><span>(6)</span></li><li><a href="/javaloveiphone/article/month/2013/02">2013年02月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2013/01">2013年01月</a><span>(1)</span></li><li><a href="/javaloveiphone/article/month/2012/12">2012年12月</a><span>(4)</span></li><li><a href="/javaloveiphone/article/month/2012/11">2012年11月</a><span>(19)</span></li><li><a href="/javaloveiphone/article/month/2012/10">2012年10月</a><span>(4)</span></li><li><a href="/javaloveiphone/article/month/2012/09">2012年09月</a><span>(26)</span></li><li><a href="/javaloveiphone/article/month/2012/08">2012年08月</a><span>(6)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="/javaloveiphone/article/details/8133772" title="response.getWriter().write()与out.print()的区别">response.getWriter().write()与out.print()的区别</a><span>(31880)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8154791" title="servlet的执行原理与生命周期">servlet的执行原理与生命周期</a><span>(20564)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7994313" title="log4j.properties配置与加载应用">log4j.properties配置与加载应用</a><span>(20009)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7956237" title="EL表达式与JSTL(C)标签">EL表达式与JSTL(C)标签</a><span>(16757)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/49492701" title="使用easyui框架form控件，单选按钮radio或复选框checkbox样式问题">使用easyui框架form控件，单选按钮radio或复选框checkbox样式问题</a><span>(16593)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/9499159" title="java导入与导出excel，兼容excel2003以及excel2007">java导入与导出excel，兼容excel2003以及excel2007</a><span>(15556)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7932993" title="js中使用s（c）标签">js中使用s（c）标签</a><span>(14987)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/50057983" title="easyui tree/TreeGrid使用：逐级加载、指定节点刷新、全部展开">easyui tree/TreeGrid使用：逐级加载、指定节点刷新、全部展开</a><span>(9636)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8112428" title="jquery的学习总结之元素选择、查找、过滤">jquery的学习总结之元素选择、查找、过滤</a><span>(7974)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8184941" title="hibernate的get和load区别">hibernate的get和load区别</a><span>(7296)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/javaloveiphone/article/details/8154791" title="servlet的执行原理与生命周期">servlet的执行原理与生命周期</a><span>(11)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52143986" title="Spring整理系列(07)——通过Spring Resource接口获取资源">Spring整理系列(07)——通过Spring Resource接口获取资源</a><span>(5)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7956237" title="EL表达式与JSTL(C)标签">EL表达式与JSTL(C)标签</a><span>(4)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8133772" title="response.getWriter().write()与out.print()的区别">response.getWriter().write()与out.print()的区别</a><span>(4)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52439613" title="CAS实现单点登录SSO执行原理探究(终于明白了)">CAS实现单点登录SSO执行原理探究(终于明白了)</a><span>(3)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/50855436" title="offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式">offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式</a><span>(3)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52253210" title="Spring整理系列(17)————循序渐进了解spring事务管理的几种方式">Spring整理系列(17)————循序渐进了解spring事务管理的几种方式</a><span>(3)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/49492317" title="easyui tree节点取消选择方法">easyui tree节点取消选择方法</a><span>(2)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8179358" title="hibernate的QBE和QBC">hibernate的QBE和QBC</a><span>(2)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52243984" title="Spring整理系列(16)——通过单元测试理解spring容器以及dubbo+zookeeper单元测试异常处理">Spring整理系列(16)——通过单元测试理解spring容器以及dubbo+zookeeper单元测试异常处理</a><span>(2)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend">
+<ul>
+<li><a href="http://blog.csdn.net/blogdevteam/article/details/60576936" target="_blank">* CSDN日报20170306——《程序员转行为什么这么难》</a></li>
+<li><a href="http://blog.csdn.net/hejjunlin/article/details/60480109" 
+target="_blank">* 直播技术总结（四）音视频数据压缩及编解码基础 </a></li>
+<li><a href="http://blog.csdn.net/qibin0506/article/details/60478869"target="_blank">* 第一个PWA程序-聊天室</a></li>
+<li><a href="http://blog.csdn.net/cyq1162/article/details/60578454" target="_blank">* 一个想法照进现实-《IT连》创业项目：万事开头难</a></li>
+<li><a href="http://blog.csdn.net/jiangwei0910410003/article/details/54879836" 
+target="_blank">* Android"挂逼"修炼之行---防自动抢红包外挂原理解析</a></li>
+
+
+</ul></ul>
+</div>
+
+
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="/javaloveiphone/article/details/8154791#comments">servlet的执行原理与生命周期</a>
+    <p style="margin:0px;"><a href="/Monkey_D_Jie" class="user_name">Monkey_D_Jie</a>:
+谢谢了！！！
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/52439613#comments">CAS实现单点登录SSO执行原理探究(终于明白了)</a>
+    <p style="margin:0px;"><a href="/forthemyth" class="user_name">forthemyth</a>:
+@forthemyth:讲的更详细全面一点，当然，不够亲民
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/52439613#comments">CAS实现单点登录SSO执行原理探究(终于明白了)</a>
+    <p style="margin:0px;"><a href="/forthemyth" class="user_name">forthemyth</a>:
+http://www.cnblogs.com/gxbk629/p/4473569.html这篇文章更...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50237597#comments">easyui ValidateBox validType字段设置多个校验规则</a>
+    <p style="margin:0px;"><a href="/javaloveiphone" class="user_name">javaloveiphone</a>:
+// 混合验证  五个参数，第一个是正则表达式，第二个是错误提示信息，第三个是调用的url，第四个是...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50237597#comments">easyui ValidateBox validType字段设置多个校验规则</a>
+    <p style="margin:0px;"><a href="/qq_35511027" class="user_name">qq_35511027</a>:
+请问一下大神,第三个多个校验的代码怎么写?
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50237597#comments">servlet的执行原理与生命周期</a>
+    <p style="margin:0px;"><a href="/qqxyy99" class="user_name">qqxyy99</a>:
+特别详细，很清晰
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/51098972#comments">由html,body{height:100%}引发的对html和body的思考</a>
+    <p style="margin:0px;"><a href="/masuwen" class="user_name">masuwen</a>:
+恩，学习了。
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/49492317#comments">easyui tree节点取消选择方法</a>
+    <p style="margin:0px;"><a href="/lhs472194266" class="user_name">lhs472194266</a>:
+很好,功能很强大!
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50855436#comments">offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式</a>
+    <p style="margin:0px;"><a href="/javaloveiphone" class="user_name">javaloveiphone</a>:
+@qq_16456919:欢迎转载，标明出处即可
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50855436#comments">offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式</a>
+    <p style="margin:0px;"><a href="/qq_16456919" class="user_name">qq_16456919</a>:
+你好，请问可以转载么？当做自己的笔记
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+
+
+                   <!-- 广告位开始 --> 
+                    <ins data-revive-zoneid="190" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins> 
+                    <!-- 广告位结束 -->
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+<script type="text/javascript" src="http://c.csdnimg.cn/rabbit/cnick/cnick.js"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js"></script>
+
+
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=1328814"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/JavaScript1.js"></script>
+
+    <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js"></script>
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+
+        $(".bar").show();
+    });
+</script>
+
+
+
+
+
+    </div>
+      <!--new top-->
+    
+    <script id="csdn-toolbar-id" btnId="header_notice_num" wrapId="note1" count="5" subCount="5" type="text/javascript" src="http://c.csdnimg.cn/public/common/toolbar/js/toolbar.js"></script>     <!--new top-->
+   
+    <link href="http://c.csdnimg.cn/comm_ask/css/ask_float_block.css" type="text/css" rel="stylesheet" />
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/wmd.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/showdown.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/prettify.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/apps/ask_float_block.js'></script>
+   
+
+   
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+   </div>
+
+    <link rel="stylesheet" href="http://static.blog.csdn.net/css/blog_code.css" />
+    <script type="text/javascript" src="http://static.blog.csdn.net/scripts/saveToCode.js"></script>
+      <script type="text/javascript" src="//csdnimg.cn/rabbit/tracking-ad/main.js?75eacd8"></script>
+
+     <link rel="stylesheet" href="http://static.blog.csdn.net/css/fa.css" />
+
+    <div class="pop_CA_cover"  style="display:none"></div>
+    <div class="pop pop_CA"  style="display:none">
+          <div class="CA_header">
+            收藏助手
+            <span class="cancel_icon"  id="fapancle"  onclick="$('.pop_CA').hide();$('.pop_CA_cover').hide();"></span>
+          </div>
+          <iframe src="" id="fa" frameborder="0" width="100%" height="360"  scrolling="no" />
+    </div>
+</body>
+</html>   
+ 

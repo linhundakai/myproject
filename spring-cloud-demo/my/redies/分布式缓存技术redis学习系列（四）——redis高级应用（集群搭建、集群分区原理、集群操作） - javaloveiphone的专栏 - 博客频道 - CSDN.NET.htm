@@ -1,0 +1,1694 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+     
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    
+<head>  
+
+    <script type="text/javascript" src="http://c.csdnimg.cn/pubfooter/js/tracking.js" charset="utf-8"></script>  
+
+    <script type="text/javascript">
+        var protocol = window.location.protocol;
+        document.write('<script type="text/javascript" src="' + protocol + '//csdnimg.cn/pubfooter/js/repoAddr2.js?v=' + Math.random() + '"></' + 'script>');
+    </script>
+
+  
+ <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+
+    <title>分布式缓存技术redis学习系列（四）——redis高级应用（集群搭建、集群分区原理、集群操作） - javaloveiphone的专栏
+        - 博客频道 - CSDN.NET</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="本文我们继续学习redis的高级特性——集群。本文主要内容包括集群搭建、集群分区原理和集群操作的学习。Redis集群简介Redis 集群是3.0之后才引入的，在3.0之前，使用哨兵（sentinel）机制（本文将不做介绍，大家可另行查阅）来监控各个节点之间的状态。Redis 集群可谓是让很多人久等了。Redis 集群是一组能进行数据共享的Redis 实例（服务或者节点）的设施，集群可以使用的功能是普" />
+    <script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+      <script type="text/javascript" src="http://static.blog.csdn.net/scripts/jquery-version.js"></script>
+    <script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+        <!--new top-->
+               <link rel="stylesheet" href="http://c.csdnimg.cn/public/common/toolbar/css/index.css">        <!--new top-->
+    
+      <!-- ad begin -->
+         <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/tracking.js"></script>
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/light_blue/css/style.css?v=1.1" />
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/javaloveiphone/rss/list" />
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+ 
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?6bcd52f51e9b3dce32bec4a3997715ac";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+
+
+    <!-- 广告位开始 -->
+        <ins data-revive-zoneid="149" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="http://c.csdnimg.cn/public/common/toolbar/js/html.js" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/javaloveiphone">javaloveiphone的专栏</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/javaloveiphone?viewmode=contents"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/javaloveiphone?viewmode=list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/javaloveiphone/rss/list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "javaloveiphone";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/javaloveiphone";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod='popu_3' > 
+
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/61435419">
+<font color=red> CSDN日报20170311——《程序员每天累成狗，是为了什么》</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp
+
+<a href="http://blog.csdn.net/turingbooks/article/details/58072986">
+<font color=blue>程序员2月书讯
+</font></a>
+
+&nbsp;&nbsp;&nbsp;
+
+<a href="http://edu.csdn.net/huiyiCourse/detail/284?ref=blog&loc=r3">
+<font color=red>【直播】用面向协议的思想简化网络请求
+</font></a>
+&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/60961185">
+<font color=blue>博客一键搬家活动开始啦
+</font></a>
+
+</div>                        </div>
+                        
+
+
+
+  
+<link href="http://static.blog.csdn.net/css/comment1.css" type="text/css" rel="stylesheet" />
+<link href="http://static.blog.csdn.net/css/style1.css" type="text/css" rel="stylesheet" />
+<script language='JavaScript' type='text/javascript' src='http://download.csdn.net/js/jquery.cookie.js'></script>
+<script type="text/javascript" src="http://c.csdnimg.cn/rabbit/search-service/main.js"></script>
+<link rel="stylesheet" href="http://static.blog.csdn.net/public/res-min/markdown_views.css?v=1.0" />
+<link rel="stylesheet" href="http://static.blog.csdn.net/css/category.css?v=1.0" />
+<script type="text/javascript" src="http://static.blog.csdn.net/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/web-storage-cache.min.js"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/replace.min.js"></script>
+
+
+
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+           
+            var isBole = false;
+            
+      
+      var fasrc="http://my.csdn.net/my/favorite/miniadd?t=%e5%88%86%e5%b8%83%e5%bc%8f%e7%bc%93%e5%ad%98%e6%8a%80%e6%9c%afredis%e5%ad%a6%e4%b9%a0%e7%b3%bb%e5%88%97%ef%bc%88%e5%9b%9b%ef%bc%89%e2%80%94%e2%80%94redis%e9%ab%98%e7%ba%a7%e5%ba%94%e7%94%a8%ef%bc%88%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba%e3%80%81%e9%9b%86%e7%be%a4%e5%88%86%e5%8c%ba%e5%8e%9f%e7%90%86%e3%80%81%e9%9b%86%e7%be%a4%e6%93%8d%e4%bd%9c%ef%bc%89&u=http://blog.csdn.net/javaloveiphone/article/details/52352894"
+
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Repost"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="/javaloveiphone/article/details/52352894">
+        分布式缓存技术redis学习系列（四）——redis高级应用（集群搭建、集群分区原理、集群操作）            
+        </a></span>
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href='http://www.csdn.net/tag/redis' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">redis</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2016-08-29 14:33</span>
+            <span class="link_view" title="阅读次数">622人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="#comments" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(0)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle('%e5%88%86%e5%b8%83%e5%bc%8f%e7%bc%93%e5%ad%98%e6%8a%80%e6%9c%afredis%e5%ad%a6%e4%b9%a0%e7%b3%bb%e5%88%97%ef%bc%88%e5%9b%9b%ef%bc%89%e2%80%94%e2%80%94redis%e9%ab%98%e7%ba%a7%e5%ba%94%e7%94%a8%ef%bc%88%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba%e3%80%81%e9%9b%86%e7%be%a4%e5%88%86%e5%8c%ba%e5%8e%9f%e7%90%86%e3%80%81%e9%9b%86%e7%be%a4%e6%93%8d%e4%bd%9c%ef%bc%89','52352894');return false;" title="收藏">收藏</a></span>
+             <span class="link_report"> <a href="#report" onclick="javascript:report(52352894,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>
+    <div class="embody"  style="display:none" id="embody">
+        <span class="embody_t">本文章已收录于：</span>
+        <div class="embody_c" id="lib" value="{&quot;err&quot;:0,&quot;msg&quot;:&quot;ok&quot;,&quot;data&quot;:[{&quot;name&quot;:&quot;大型网站架构知识库&quot;,&quot;url&quot;:&quot;http://lib.csdn.net/base/16?source=blogtop&quot;,&quot;logo&quot;:&quot;http://img.knowledge.csdn.net/upload/base/1458091865915_915.jpg&quot;}]}"></div>
+    </div>
+    <style type="text/css">        
+            .embody{
+                padding:10px 10px 10px;
+                margin:0 -20px;
+                border-bottom:solid 1px #ededed;                
+            }
+            .embody_b{
+                margin:0 ;
+                padding:10px 0;
+            }
+            .embody .embody_t,.embody .embody_c{
+                display: inline-block;
+                margin-right:10px;
+            }
+            .embody_t{
+                font-size: 12px;
+                color:#999;
+            }
+            .embody_c{
+                font-size: 12px;
+            }
+            .embody_c img,.embody_c em{
+                display: inline-block;
+                vertical-align: middle;               
+            }
+             .embody_c img{               
+                width:30px;
+                height:30px;
+            }
+            .embody_c em{
+                margin: 0 20px 0 10px;
+                color:#333;
+                font-style: normal;
+            }
+    </style>
+    <script  type="text/javascript">
+        $(function () {
+            try
+            {
+                var lib = eval("("+$("#lib").attr("value")+")");
+                var html = "";
+                if (lib.err == 0) {
+                    $.each(lib.data, function (i) {
+                        var obj = lib.data[i];
+                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                        html += ' <a href="' + obj.url + '" target="_blank">';
+                        html += ' <img src="' + obj.logo + '">';
+                        html += ' <em><b>' + obj.name + '</b></em>';
+                        html += ' </a>';
+                    });
+                    if (html != "") {
+                        setTimeout(function () {
+                            $("#lib").html(html);                      
+                            $("#embody").show();
+                        }, 100);
+                    }
+                }      
+            } catch (err)
+            { }
+            
+        });
+    </script>
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="http://static.blog.csdn.net/images/category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label  onclick="GetCategoryArticles('6383102','javaloveiphone','top','52352894');">
+                        <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">redis<em>（10）</em></span>
+                      <img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="http://static.blog.csdn.net/images/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a  href="http://blog.csdn.net/javaloveiphone/article/category/6383102"  target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_6383102">                            
+                            </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+    <script   type="text/javascript" src="http://static.blog.csdn.net/scripts/category.js"></script>  
+
+  
+
+  
+  
+     
+
+<div id="article_content" class="article_content">
+        <div class="markdown_views"><p>本文我们继续学习redis的高级特性——集群。本文主要内容包括集群搭建、集群分区原理和集群操作的学习。</p>
+
+<h1 id="redis集群简介">Redis集群简介</h1>
+
+<p>Redis 集群是3.0之后才引入的，在3.0之前，使用哨兵（sentinel）机制（本文将不做介绍，大家可另行查阅）来监控各个节点之间的状态。Redis 集群可谓是让很多人久等了。</p>
+
+<p>Redis 集群是一组能进行数据共享的Redis 实例（服务或者节点）的设施，集群可以使用的功能是普通单机 Redis 所能使用的功能的一个子集；Redis 集群通常具有高可用、可扩展性、分布式、容错等特性。了解redis的集群后，这些晦涩的概念可结合redis的主从、集群分区和集群运维等角度理解体会。</p>
+
+<h1 id="redis集群搭建">Redis集群搭建</h1>
+
+<h2 id="创建集群文件夹">创建集群文件夹</h2>
+
+<p>在/usr/local/下新建redis-cluster目录并在redis-cluster下新建7031~7036共6个文件夹，这6个文件夹代表创建redis集群的6个节点。如下</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs perl">[root<span class="hljs-variable">@localhost</span> <span class="hljs-keyword">local</span>]<span class="hljs-comment"># mkdir -p /usr/local/redis-cluster</span>
+[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># mkdir 7031 7032 7033 7034 7035 7036</span></code></pre>
+
+<h2 id="拷贝修改配置文件">拷贝修改配置文件</h2>
+
+<p>将已有的/usr/local/redis/etc/下的redis.conf拷贝到新创建的7031目录中 <br>
+[root@localhost etc]# cp redis.conf /usr/local/redis-cluster/7031 <br>
+[root@localhost 7031]# vi redis.conf <br>
+修改项如下： <br>
+<font color="red"> <br>
+（1）绑定端口，port 7031</font> <br>
+<font color="red"> <br>
+（2）绑定IP，bind 192.168.2.128</font> <br>
+<font color="red"> <br>
+（3）指定数据存放路径，dir /usr/local/redis-cluster/7031</font> <br>
+<font color="red"> <br>
+（4）启动集群模式，cluster-enabled yes</font> <br>
+<font color="red"> <br>
+（5）指定集群节点配置文件，cluster-config-file nodes-7031.conf</font></p>
+
+<p>（6）后台启动，daemonize yes</p>
+
+<p>（7）指定集群节点超时时间，cluster-node-timeout 5000</p>
+
+<p>（8）指定持久化方式，appendonly yes</p>
+
+<p><strong>上面红色项目最好全部设置，不然会出意想不到的错误</strong>，703x最好与节点文件夹保持一致。 <br>
+将7031的redis.conf改完后再拷贝到剩下的5个目录中，然后只要全局替换redis.conf中的7031为相应的节点即可。</p>
+
+<h2 id="安装ruby">安装ruby</h2>
+
+<p>由于Redis 集群客户端实现很少，redis集群的启动需要用到ruby实现的redis-trib.rb，所以我们需要先安装ruby。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># yum install ruby</span>
+[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># yum install rubygems</span>
+[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># gem install redis</span></code></pre>
+
+<h2 id="启动redis实例">启动redis实例</h2>
+
+
+
+<pre class="prettyprint"><code class=" hljs perl">[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># </span>
+/usr/<span class="hljs-keyword">local</span>/redis/bin/redis-server /usr/<span class="hljs-keyword">local</span>/redis-cluster/<span class="hljs-number">7031</span>/redis.conf</code></pre>
+
+<p>分别启动6个redis实例。也可以用脚本循环启动，这样更方便省时</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs perl">[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment">#</span>
+<span class="hljs-keyword">for</span>((i=<span class="hljs-number">1</span>;i&lt;=<span class="hljs-number">6</span>;i++)); <span class="hljs-keyword">do</span> /usr/<span class="hljs-keyword">local</span>/redis/bin/redis-server /usr/<span class="hljs-keyword">local</span>/redis-cluster/<span class="hljs-number">703</span><span class="hljs-variable">$i</span>/redis.conf; done</code></pre>
+
+<h2 id="查看redis实例是否启动成功">查看redis实例是否启动成功</h2>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># netstat -tunpl | grep redis-server</span>
+<span class="hljs-comment">#或者</span>
+[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># ps -ef | grep redis-server</span></code></pre>
+
+<p><img src="http://img.blog.csdn.net/20160829132843043" alt="这里写图片描述" title=""></p>
+
+<h2 id="创建并启动集群">创建并启动集群</h2>
+
+<p>进入redis安装目录的bin目录下</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">[root<span class="hljs-variable">@localhost</span> ~]<span class="hljs-comment"># cd /usr/local/redis/bin/</span>
+[root<span class="hljs-variable">@localhost</span> bin]<span class="hljs-comment">#./redis-trib.rb create --replicas 1 192.168.2.128:7031 192.168.2.128:7032 192.168.2.128:7033 192.168.2.128:7034 192.168.2.128:7035 192.168.2.128:7036 </span></code></pre>
+
+<p>命令的意义如下： <br>
+给定 redis-trib.rb 程序的命令是 create，表示创建一个新的集群。<font color="red">选项 –replicas 1 表示为集群中的每个主节点创建一个从节点</font>。之后跟着的其他参数则是实例的地址列表， 指定使用这些地址所指示的实例来创建新集群。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs css">&gt;&gt;&gt; <span class="hljs-tag">Creating</span> <span class="hljs-tag">cluster</span>
+&gt;&gt;&gt; <span class="hljs-tag">Performing</span> <span class="hljs-tag">hash</span> <span class="hljs-tag">slots</span> <span class="hljs-tag">allocation</span> <span class="hljs-tag">on</span> 6 <span class="hljs-tag">nodes</span>...
+<span class="hljs-tag">Using</span> 3 <span class="hljs-tag">masters</span>:
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7032</span>
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7033</span>
+<span class="hljs-tag">Adding</span> <span class="hljs-tag">replica</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7034</span> <span class="hljs-tag">to</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>
+<span class="hljs-tag">Adding</span> <span class="hljs-tag">replica</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7035</span> <span class="hljs-tag">to</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7032</span>
+<span class="hljs-tag">Adding</span> <span class="hljs-tag">replica</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7036</span> <span class="hljs-tag">to</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7033</span>
+......
+<span class="hljs-attr_selector">[OK]</span> <span class="hljs-tag">All</span> <span class="hljs-tag">nodes</span> <span class="hljs-tag">agree</span> <span class="hljs-tag">about</span> <span class="hljs-tag">slots</span> <span class="hljs-tag">configuration</span>.
+&gt;&gt;&gt; <span class="hljs-tag">Check</span> <span class="hljs-tag">for</span> <span class="hljs-tag">open</span> <span class="hljs-tag">slots</span>...
+&gt;&gt;&gt; <span class="hljs-tag">Check</span> <span class="hljs-tag">slots</span> <span class="hljs-tag">coverage</span>...
+<span class="hljs-attr_selector">[OK]</span> <span class="hljs-tag">All</span> 16384 <span class="hljs-tag">slots</span> <span class="hljs-tag">covered</span>.</code></pre>
+
+<p>“All 16384 slots covered.”表示集群中的 16384 个槽都有至少一个主节点在处理， 集群运作正常。从打印出来的信息也可以看出，7031，7032，7033是主节点，其它三个是从节点。</p>
+
+<h2 id="客户端连接集群">客户端连接集群</h2>
+
+<p>集群启动成功后，我们就可以用任意一个客户端连接集群了，如下</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs avrasm">[root@localhost bin]<span class="hljs-preprocessor"># /usr/local/redis/bin/redis-cli -c -h 192.168.2.128 -p 7031</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; info
+<span class="hljs-preprocessor"># Server</span>
+<span class="hljs-label">redis_version:</span><span class="hljs-number">3.2</span><span class="hljs-number">.0</span>
+<span class="hljs-label">redis_git_sha1:</span><span class="hljs-number">00000000</span>
+<span class="hljs-label">redis_git_dirty:</span><span class="hljs-number">0</span>
+<span class="hljs-label">redis_build_id:</span>f8fcffd133fe3364
+<span class="hljs-label">redis_mode:</span>cluster
+<span class="hljs-label">os:</span>Linux <span class="hljs-number">2.6</span><span class="hljs-number">.32</span>-<span class="hljs-number">504.</span>el6<span class="hljs-preprocessor">.x</span>86_64 x86_64
+<span class="hljs-label">arch_bits:</span><span class="hljs-number">64</span></code></pre>
+
+<p>可以使用 cluster info命令查看集群信息，cluster nodes命令查看集群节点信息。</p>
+
+<h2 id="集群关闭">集群关闭</h2>
+
+<p>关闭集群需要逐个关闭</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs perl">[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment">#</span>
+<span class="hljs-keyword">for</span>((i=<span class="hljs-number">1</span>;i&lt;=<span class="hljs-number">6</span>;i++)); <span class="hljs-keyword">do</span> /usr/<span class="hljs-keyword">local</span>/redis/bin/redis-cli -c -h <span class="hljs-number">192.168</span>.<span class="hljs-number">2.128</span> -p <span class="hljs-number">703</span><span class="hljs-variable">$i</span> <span class="hljs-keyword">shutdown</span>; done</code></pre>
+
+<p>如果重新启动集群报以下错误</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs applescript">[ERR] Node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span> <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> empty. Either <span class="hljs-keyword">the</span> node already knows other nodes (check <span class="hljs-keyword">with</span> CLUSTER NODES) <span class="hljs-keyword">or</span> <span class="hljs-keyword">contains</span> <span class="hljs-keyword">some</span> key <span class="hljs-keyword">in</span> database <span class="hljs-number">0.</span></code></pre>
+
+<p>需要清除杀掉redis实例，然后删除每个节点下的临时数据文件appendonly.aof，dump.rdb，nodes-703x.conf，然后再重新启动redis实例即可启动集群。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs mel">[root<span class="hljs-variable">@localhost</span> redis-<span class="hljs-keyword">cluster</span>]#<span class="hljs-keyword">for</span>((i=<span class="hljs-number">1</span>;i&lt;=<span class="hljs-number">6</span>;i++)); <span class="hljs-keyword">do</span> cd <span class="hljs-number">703</span><span class="hljs-variable">$i</span>; rm -rf appendonly.aof; rm -rf dump.rdb; rm -rf nodes-<span class="hljs-number">703</span><span class="hljs-variable">$i</span>.conf; cd ..; done</code></pre>
+
+<h2 id="修改补充1命令脚本启动实例创建集群关闭实例操作"><font color="red">
+修改补充1：命令脚本启动实例、创建集群、关闭实例操作
+</font></h2>
+
+<p>新建start_all.sh，内容为：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso">for((i<span class="hljs-subst">=</span><span class="hljs-number">1</span>;i<span class="hljs-subst">&lt;=</span><span class="hljs-number">6</span>;i<span class="hljs-subst">++</span>)); <span class="hljs-keyword">do</span> /usr/<span class="hljs-built_in">local</span>/redis/bin/redis<span class="hljs-attribute">-server</span> /usr/<span class="hljs-built_in">local</span>/redis<span class="hljs-attribute">-cluster</span>/<span class="hljs-number">703</span><span class="hljs-variable">$i</span>/redis<span class="hljs-built_in">.</span>conf; done</code></pre>
+
+<p>新建create_cluster.sh，内容为：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver">./redis-trib.rb <span class="hljs-built_in">create</span> <span class="hljs-comment">--replicas 1 192.168.2.128:7031 192.168.2.128:7032 192.168.2.128:7033 192.168.2.128:7034 192.168.2.128:7035 192.168.2.128:7036</span></code></pre>
+
+<p>新建shutdown_all.sh，内容为：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso">for((i<span class="hljs-subst">=</span><span class="hljs-number">1</span>;i<span class="hljs-subst">&lt;=</span><span class="hljs-number">6</span>;i<span class="hljs-subst">++</span>)); <span class="hljs-keyword">do</span> /usr/<span class="hljs-built_in">local</span>/redis/bin/redis<span class="hljs-attribute">-cli</span> <span class="hljs-attribute">-c</span> <span class="hljs-attribute">-h</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span> <span class="hljs-attribute">-p</span> <span class="hljs-number">703</span><span class="hljs-variable">$i</span> shutdown; done</code></pre>
+
+<p>将上述文件放于bin文件夹下，然后设置权限启动：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">
+[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># chmod 777 start-all.sh  </span>
+[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># chmod 777 create_cluster.sh </span>
+[root<span class="hljs-variable">@localhost</span> redis-cluster]<span class="hljs-comment"># chmod 777 shutdown_all.sh </span>
+</code></pre>
+
+<p>进入bin目录执行命令脚本：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">[root<span class="hljs-variable">@localhost</span> bin]<span class="hljs-comment"># ./start-all.sh  </span>
+[root<span class="hljs-variable">@localhost</span> bin]<span class="hljs-comment"># ./create_cluster.sh  </span>
+[root<span class="hljs-variable">@localhost</span> bin]<span class="hljs-comment"># ./shutdown_all.sh  </span></code></pre>
+
+<h2 id="修改补充2关闭重启集群is-not-empty异常"><font color="red">
+修改补充2：关闭重启集群is not empty异常
+</font></h2>
+
+<p>关闭重启集群时报出的is not empty异常，需要删除集群上次运行时所产生的相关快照、数据等记录文件，这样的话才能正常启动。</p>
+
+<p>完全关闭集群实例，则意味着所有redis实例挂掉了；执行删除操作，就意味着redis集群数据丢失；redis集群可能没有考虑全部挂掉的情况。</p>
+
+<h2 id="集群测试">集群测试</h2>
+
+<p>下面我们先来体验一下集群的set,get简单操作，后面我们会进一步学习集群的更多操作。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs applescript"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; <span class="hljs-keyword">set</span> <span class="hljs-property">name</span> <span class="hljs-string">"zhangsan"</span>
+-&gt; Redirected <span class="hljs-keyword">to</span> slot [<span class="hljs-number">5798</span>] located <span class="hljs-keyword">at</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7032</span>
+OK
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7032</span>&gt; <span class="hljs-keyword">set</span> age <span class="hljs-number">20</span>
+-&gt; Redirected <span class="hljs-keyword">to</span> slot [<span class="hljs-number">741</span>] located <span class="hljs-keyword">at</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>
+OK
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; <span class="hljs-keyword">set</span> sex <span class="hljs-string">"man"</span>
+OK
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt;</code></pre>
+
+<p>如果在连接客户端的时候不加-c选项set key时则会报MOVED 的错误：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs applescript">[root@localhost bin]<span class="hljs-comment"># /usr/local/redis/bin/redis-cli -h 192.168.2.128 -p 7031</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; <span class="hljs-keyword">set</span> <span class="hljs-property">name</span> <span class="hljs-string">"zhangsan"</span>
+(<span class="hljs-keyword">error</span>) MOVED <span class="hljs-number">5798</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7032</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; <span class="hljs-keyword">set</span> age <span class="hljs-number">20</span>
+OK
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; <span class="hljs-keyword">set</span> sex <span class="hljs-string">"man"</span>
+OK
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt;</code></pre>
+
+<p>来看看取值又是怎么样</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs applescript"><span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; <span class="hljs-keyword">get</span> <span class="hljs-property">name</span>
+-&gt; Redirected <span class="hljs-keyword">to</span> slot [<span class="hljs-number">5798</span>] located <span class="hljs-keyword">at</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7032</span>
+<span class="hljs-string">"zhangsan"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7032</span>&gt; <span class="hljs-keyword">get</span> age
+-&gt; Redirected <span class="hljs-keyword">to</span> slot [<span class="hljs-number">741</span>] located <span class="hljs-keyword">at</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>
+<span class="hljs-string">"20"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt; <span class="hljs-keyword">get</span> sex
+<span class="hljs-string">"man"</span>
+<span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>&gt;</code></pre>
+
+<p>可以看到，<font color="red">客户端连接加-c选项的时候，存储和提取key的时候不断在7031和7032之间跳转，这个称为客户端重定向。之所以发生客户端重定向</font>，是因为Redis Cluster中的每个Master节点都会负责一部分的槽(slot)，存取的时候都会进行键值空间计算定位key映射在哪个槽(slot)上，如果映射的槽(slot)正好是当前Master节点负责则直接存取，否则就跳转到其他Master节点负的槽(slot)中存取，这个过程对客户端是透明的。继续看下文的集群分区原理。</p>
+
+<h1 id="redis集群分区原理">Redis集群分区原理</h1>
+
+<h2 id="槽slot的基本概念">槽(slot)的基本概念</h2>
+
+<p>从上面集群的简单操作中，我们已经知道redis存取key的时候，都要定位相应的槽(slot)。 <br>
+<font color="red">Redis 集群键分布算法使用数据分片（sharding）而非一致性哈希（consistency hashing）</font>来实现： <font color="red">一个 Redis 集群包含 16384 个哈希槽（hash slot）</font>， 它们的编号为0、1、2、3……16382、16383，这个槽是一个逻辑意义上的槽，实际上并不存在。redis中的每个key都属于这 16384 个哈希槽的其中一个，存取key时都要进行key-&gt;slot的映射计算。 <br>
+下面我们来看看启动集群时候打印的信息:</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs css">&gt;&gt;&gt; <span class="hljs-tag">Creating</span> <span class="hljs-tag">cluster</span>
+&gt;&gt;&gt; <span class="hljs-tag">Performing</span> <span class="hljs-tag">hash</span> <span class="hljs-tag">slots</span> <span class="hljs-tag">allocation</span> <span class="hljs-tag">on</span> 6 <span class="hljs-tag">nodes</span>...
+<span class="hljs-tag">Using</span> 3 <span class="hljs-tag">masters</span>:
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7032</span>
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7033</span>
+<span class="hljs-tag">Adding</span> <span class="hljs-tag">replica</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7034</span> <span class="hljs-tag">to</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>
+<span class="hljs-tag">Adding</span> <span class="hljs-tag">replica</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7035</span> <span class="hljs-tag">to</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7032</span>
+<span class="hljs-tag">Adding</span> <span class="hljs-tag">replica</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7036</span> <span class="hljs-tag">to</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7033</span>
+<span class="hljs-tag">M</span>: <span class="hljs-tag">bee706db5ae182c5be9b9bdf94c2d6f3f8c8ec5c</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>
+   <span class="hljs-tag">slots</span><span class="hljs-pseudo">:0-5460</span> (5461 <span class="hljs-tag">slots</span>) <span class="hljs-tag">master</span>
+<span class="hljs-tag">M</span>: 72826<span class="hljs-tag">f06dbf3be163f2f456ca24caed76a15bdf4</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7032</span>
+   <span class="hljs-tag">slots</span><span class="hljs-pseudo">:5461-10922</span> (5462 <span class="hljs-tag">slots</span>) <span class="hljs-tag">master</span>
+<span class="hljs-tag">M</span>: <span class="hljs-tag">ab6e9d1dfc471225eef01e57be563157f81d26b3</span> 192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7033</span>
+   <span class="hljs-tag">slots</span><span class="hljs-pseudo">:10923-16383</span> (5461 <span class="hljs-tag">slots</span>) <span class="hljs-tag">master</span>
+......
+<span class="hljs-attr_selector">[OK]</span> <span class="hljs-tag">All</span> <span class="hljs-tag">nodes</span> <span class="hljs-tag">agree</span> <span class="hljs-tag">about</span> <span class="hljs-tag">slots</span> <span class="hljs-tag">configuration</span>.
+&gt;&gt;&gt; <span class="hljs-tag">Check</span> <span class="hljs-tag">for</span> <span class="hljs-tag">open</span> <span class="hljs-tag">slots</span>...
+&gt;&gt;&gt; <span class="hljs-tag">Check</span> <span class="hljs-tag">slots</span> <span class="hljs-tag">coverage</span>...
+<span class="hljs-attr_selector">[OK]</span> <span class="hljs-tag">All</span> 16384 <span class="hljs-tag">slots</span> <span class="hljs-tag">covered</span>.</code></pre>
+
+<p>从上面信息可以看出，创建集群的时候，<font color="red">哈希槽被分配到了三个主节点上，从节点是没有哈希槽的</font>。7031负责编号为0-5460 共5461个 slots，7032负责编号为 5461-10922共5462 个 slots，7033负责编号为10923-16383 共5461个 slots。</p>
+
+<h2 id="键-槽映射算法">键-槽映射算法</h2>
+
+<p>和memcached一样，redis也采用一定的算法进行键-槽（key-&gt;slot）之间的映射。memcached采用一致性哈希（consistency hashing）算法进行键-节点（key-node）之间的映射，而redis集群使用集群公式来计算键 key 属于哪个槽：</p>
+
+<p><strong>HASH_SLOT（key）= CRC16(key) % 16384</strong></p>
+
+<p>其中 CRC16(key) 语句用于计算键 key 的 CRC16 校验和 。key经过公式计算后得到所对应的哈希槽，而哈希槽被某个主节点管理，从而确定key在哪个主节点上存取，这也是redis将数据均匀分布到各个节点上的基础。</p>
+
+<p><img src="http://img.blog.csdn.net/20160829133131758" alt="这里写图片描述" title=""></p>
+
+<h2 id="集群分区好处">集群分区好处</h2>
+
+<p>无论是memcached的一致性哈希算法，还是redis的集群分区，<font color="red">最主要的目的都是在移除、添加一个节点时对已经存在的缓存数据的定位影响尽可能的降到最小</font>。redis将哈希槽分布到不同节点的做法使得用户可以很容易地向集群中添加或者删除节点， 比如说：</p>
+
+<p>1）、如果用户将新节点 D 添加到集群中， 那么集群只需要将节点 A 、B 、 C 中的某些槽移动到节点 D 就可以了。</p>
+
+<p>2)、与此类似， 如果用户要从集群中移除节点 A ， 那么集群只需要将节点 A 中的所有哈希槽移动到节点 B 和节点 C ， 然后再移除空白（不包含任何哈希槽）的节点 A 就可以了。</p>
+
+<p>因为将一个哈希槽从一个节点移动到另一个节点不会造成节点阻塞， 所以无论是添加新节点还是移除已存在节点， 又或者改变某个节点包含的哈希槽数量， 都不会造成集群下线，从而保证集群的可用性。下面我们就来学习下集群中节点的增加和删除。</p>
+
+<h1 id="集群操作">集群操作</h1>
+
+<p>集群操作包括查看集群信息，查看集群节点信息，向集群中增加节点、删除节点，重新分配槽等操作。</p>
+
+<h2 id="查看集群信息">查看集群信息</h2>
+
+<p>cluster info 查看集群状态，槽分配，集群大小等，cluster nodes也可查看主从节点。</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs css">192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>&gt; <span class="hljs-tag">cluster</span> <span class="hljs-tag">info</span>
+<span class="hljs-tag">cluster_state</span><span class="hljs-pseudo">:ok</span>
+<span class="hljs-tag">cluster_slots_assigned</span><span class="hljs-pseudo">:16384</span>
+<span class="hljs-tag">cluster_slots_ok</span><span class="hljs-pseudo">:16384</span>
+<span class="hljs-tag">cluster_slots_pfail</span><span class="hljs-pseudo">:0</span>
+<span class="hljs-tag">cluster_slots_fail</span><span class="hljs-pseudo">:0</span>
+<span class="hljs-tag">cluster_known_nodes</span><span class="hljs-pseudo">:6</span>
+<span class="hljs-tag">cluster_size</span><span class="hljs-pseudo">:3</span>
+<span class="hljs-tag">cluster_current_epoch</span><span class="hljs-pseudo">:6</span>
+<span class="hljs-tag">cluster_my_epoch</span><span class="hljs-pseudo">:1</span>
+<span class="hljs-tag">cluster_stats_messages_sent</span><span class="hljs-pseudo">:119</span>
+<span class="hljs-tag">cluster_stats_messages_received</span><span class="hljs-pseudo">:119</span>
+192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>&gt;</code></pre>
+
+<h2 id="新增节点">新增节点</h2>
+
+<p>（1）新增节点配置文件 <br>
+执行下面的脚本创建脚本配置文件</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs mel">[root<span class="hljs-variable">@localhost</span> redis-<span class="hljs-keyword">cluster</span>]# mkdir /usr/local/redis-<span class="hljs-keyword">cluster</span>/<span class="hljs-number">7037</span> &amp;&amp; cp /usr/local/redis-<span class="hljs-keyword">cluster</span>/<span class="hljs-number">7031</span>/redis.conf /usr/local/redis-<span class="hljs-keyword">cluster</span>/<span class="hljs-number">7037</span>/redis.conf &amp;&amp; sed -i <span class="hljs-string">"s/7031/7037/g"</span> /usr/local/redis-<span class="hljs-keyword">cluster</span>/<span class="hljs-number">7037</span>/redis.conf</code></pre>
+
+<p>（2）启动新增节点</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">[root<span class="hljs-variable">@localhost</span> bin]<span class="hljs-comment"># /usr/local/redis/bin/redis-server /usr/local/redis-cluster/7037/redis.conf</span></code></pre>
+
+<p>（3）添加节点到集群 <br>
+现在已经添加了新增一个节点所需的配置文件，但是这个这点还没有添加到集群中，现在让它成为集群中的一个主节点</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs vbnet">[root@localhost redis-cluster]<span class="hljs-preprocessor"># cd /usr/local/redis/bin/</span>
+[root@localhost bin]<span class="hljs-preprocessor"># ./redis-trib.rb add-node 192.168.2.128:7037 192.168.2.128:7036</span>
+&gt;&gt;&gt; Adding node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7037</span> <span class="hljs-keyword">to</span> cluster <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7036</span>
+&gt;&gt;&gt; Performing Cluster Check (<span class="hljs-keyword">using</span> node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7036</span>)
+S: <span class="hljs-number">2</span>c8d72f1914f9d6052065f7e9910cc675c3c717b <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7036</span>
+   slots: (<span class="hljs-number">0</span> slots) slave
+   replicates <span class="hljs-number">6</span>dbb4aa323864265c9507cf336ef7d3b95ea8d1b
+M: <span class="hljs-number">6</span>dbb4aa323864265c9507cf336ef7d3b95ea8d1b <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7033</span>
+   slots:<span class="hljs-number">10923</span>-<span class="hljs-number">16383</span> (<span class="hljs-number">5461</span> slots) master
+   <span class="hljs-number">1</span> additional replica(s)
+S: <span class="hljs-number">791</span>a7924709bfd7ef5c36d9b9c838925e41e3c2e <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7034</span>
+   slots: (<span class="hljs-number">0</span> slots) slave
+   replicates d9e3c78a7c49689c29ab67a8a17be9d95cb08452
+M: d9e3c78a7c49689c29ab67a8a17be9d95cb08452 <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>
+   slots:<span class="hljs-number">0</span>-<span class="hljs-number">5460</span> (<span class="hljs-number">5461</span> slots) master
+   <span class="hljs-number">1</span> additional replica(s)
+M: <span class="hljs-number">69</span>b63d8db629fa8a689dd1ed25ed941c076d4111 <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7032</span>
+   slots:<span class="hljs-number">5461</span>-<span class="hljs-number">10922</span> (<span class="hljs-number">5462</span> slots) master
+   <span class="hljs-number">1</span> additional replica(s)
+S: e669a91866225279aafcac29bf07b826eb5be91c <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7035</span>
+   slots: (<span class="hljs-number">0</span> slots) slave
+   replicates <span class="hljs-number">69</span>b63d8db629fa8a689dd1ed25ed941c076d4111
+[OK] All nodes agree about slots configuration.
+&gt;&gt;&gt; Check <span class="hljs-keyword">for</span> open slots...
+&gt;&gt;&gt; Check slots coverage...
+[OK] All <span class="hljs-number">16384</span> slots covered.
+&gt;&gt;&gt; Send CLUSTER MEET <span class="hljs-keyword">to</span> node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7037</span> <span class="hljs-keyword">to</span> make it <span class="hljs-keyword">join</span> the cluster.
+[OK] <span class="hljs-keyword">New</span> node added correctly.
+[root@localhost bin]<span class="hljs-preprocessor">#</span></code></pre>
+
+<p>./redis-trib.rb add-node 命令中，7037 是新增的主节点，7036 是集群中已有的从节点。再来看看集群信息</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs css">192<span class="hljs-class">.168</span><span class="hljs-class">.2</span><span class="hljs-class">.128</span><span class="hljs-pseudo">:7031</span>&gt; <span class="hljs-tag">cluster</span> <span class="hljs-tag">info</span>
+<span class="hljs-tag">cluster_state</span><span class="hljs-pseudo">:ok</span>
+<span class="hljs-tag">cluster_slots_assigned</span><span class="hljs-pseudo">:16384</span>
+<span class="hljs-tag">cluster_slots_ok</span><span class="hljs-pseudo">:16384</span>
+<span class="hljs-tag">cluster_slots_pfail</span><span class="hljs-pseudo">:0</span>
+<span class="hljs-tag">cluster_slots_fail</span><span class="hljs-pseudo">:0</span>
+<span class="hljs-tag">cluster_known_nodes</span><span class="hljs-pseudo">:7</span>
+<span class="hljs-tag">cluster_size</span><span class="hljs-pseudo">:3</span>
+<span class="hljs-tag">cluster_current_epoch</span><span class="hljs-pseudo">:6</span>
+<span class="hljs-tag">cluster_my_epoch</span><span class="hljs-pseudo">:1</span>
+<span class="hljs-tag">cluster_stats_messages_sent</span><span class="hljs-pseudo">:11256</span>
+<span class="hljs-tag">cluster_stats_messages_received</span><span class="hljs-pseudo">:11256</span></code></pre>
+
+<p><img src="http://img.blog.csdn.net/20160829133410113" alt="这里写图片描述" title=""></p>
+
+<p><font color="red">=============================================让其成为主节点================================================</font> <br>
+（4）分配槽 <br>
+从添加主节点输出信息和查看集群信息中可以看出，我们已经成功的向集群中添加了一个主节点，但是这个主节还没有成为真正的主节点，因为还没有分配槽（slot），也没有从节点，现在要给它分配槽（slot）</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs vbnet">[root@localhost bin]<span class="hljs-preprocessor"># ./redis-trib.rb reshard 192.168.2.128:7031</span>
+&gt;&gt;&gt; Performing Cluster Check (<span class="hljs-keyword">using</span> node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>)
+M: <span class="hljs-number">1</span>a544a9884e0b3b9a73db80633621bd90ceff64a <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>
+   ......
+[OK] All nodes agree about slots configuration.
+&gt;&gt;&gt; Check <span class="hljs-keyword">for</span> open slots...
+&gt;&gt;&gt; Check slots coverage...
+[OK] All <span class="hljs-number">16384</span> slots covered.
+How many slots <span class="hljs-keyword">do</span> you want <span class="hljs-keyword">to</span> move (<span class="hljs-keyword">from</span> <span class="hljs-number">1</span> <span class="hljs-keyword">to</span> <span class="hljs-number">16384</span>)? <span class="hljs-number">1024</span>
+What <span class="hljs-keyword">is</span> the receiving node ID?</code></pre>
+
+<p>系统提示要移动多少个配槽（slot）,并且配槽（slot）要移动到哪个节点，任意输入一个数，如1024，再输入新增节点的ID cf48228259def4e51e7e74448e05b7a6c8f5713f.</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs livecodeserver">What is <span class="hljs-operator">the</span> receiving node ID? cf48228259def4e51e7e74448e05b7a6c8f5713f
+Please enter all <span class="hljs-operator">the</span> source node IDs.
+  Type <span class="hljs-string">'all'</span> <span class="hljs-built_in">to</span> use all <span class="hljs-operator">the</span> nodes <span class="hljs-keyword">as</span> source nodes <span class="hljs-keyword">for</span> <span class="hljs-operator">the</span> hash slots.
+  Type <span class="hljs-string">'done'</span> once you entered all <span class="hljs-operator">the</span> source nodes IDs.
+Source node <span class="hljs-comment">#1:</span></code></pre>
+
+<p>然后提示要从哪几个节点中移除1024个槽（slot），这里输入‘all’表示从所有的主节点中随机转移，凑够1024个哈希槽，然后就开始从新分配槽（slot）了。从新分配完后再次查看集群节点信息 <br>
+<img src="http://img.blog.csdn.net/20160829133439442" alt="这里写图片描述" title=""> <br>
+可见，0-340 5461-5802 10923-11263的槽（slot）被分配给了新增加的节点。三个加起来刚好1024个槽（slot）。</p>
+
+<p>（5）指定从节点 <br>
+现在从节点7036的主节点是7033，现在我们要把他变为新增加节点（7037）的从节点，需要登录7036的客户端</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ruby">[root<span class="hljs-variable">@localhost</span> bin]<span class="hljs-comment">#  /usr/local/redis/bin/redis-cli -c -h 192.168.2.128 -p 7036</span>
+<span class="hljs-number">192.168</span>.<span class="hljs-number">2.128</span><span class="hljs-symbol">:</span><span class="hljs-number">7036</span>&gt; cluster replicate cf48228259def4e51e7e74448e05b7a6c8f5713f
+<span class="hljs-constant">OK</span></code></pre>
+
+<p>再来查看集群节点信息 <br>
+<img src="http://img.blog.csdn.net/20160829133509911" alt="这里写图片描述" title=""></p>
+
+<p>可见，7036成为了新增节点7037的从节点。</p>
+
+<p><font color="red">============================让其成为从节点============================================</font> <br>
+[root@localhost bin]# redis-cli -c -p 7037 cluster replicate cc0a527378f4fe60d1147d1785097f7b8a3457d5</p>
+
+<h2 id="删除节点">删除节点</h2>
+
+<p>指定删除节点的ID即可，如下</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs python">[root<span class="hljs-decorator">@localhost bin]#</span>
+./redis-trib.rb <span class="hljs-keyword">del</span>-node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7037</span> <span class="hljs-string">'a56461a171334560f16652408c2a45e629d268f6'</span>
+<span class="hljs-prompt">&gt;&gt;&gt; </span>Removing node a56461a171334560f16652408c2a45e629d268f6 <span class="hljs-keyword">from</span> cluster <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7037</span>
+<span class="hljs-prompt">&gt;&gt;&gt; </span>Sending CLUSTER FORGET messages to the cluster...
+<span class="hljs-prompt">&gt;&gt;&gt; </span>SHUTDOWN the node.
+[root<span class="hljs-decorator">@localhost bin]#</span></code></pre>
+
+<h2 id="修改补充3删除主节点异常is-not-empty-reshard-data-away-and-try-again"><font color="red">
+修改补充3：删除主节点异常：is not empty! Reshard data away and try again.
+</font></h2>
+
+<p>删除节点报is not empty! Reshard data away and try again.异常的意思就是因为当前节点不为空(有slots槽)，需要重新分区(即把当前节点的槽分出去)才可以删除节点。</p>
+
+<p>具体措施：重复执行上面(4)分配槽</p>
+
+<p>在<font color="red">How many slots do you want to move (from 1 to 16384)? </font>，指要移动多少个配槽，输入要删除节点现有槽数量；</p>
+
+<p>在<font color="red">What is the receiving node ID?</font>，指分配给谁，输入节点id，需要删除的节点除外；</p>
+
+<p>在<font color="red">Source node #1:</font>，指从哪几个节点中移除1024个槽，此时输入需要删除节点的id。</p>
+
+<p><font color="red">注：删除从节点，则不会出现上面的异常，因为从节点没有哈希槽slots</font></p>
+
+<h2 id="集群操作小结">集群操作小结</h2>
+
+<p>从上面过程可以看出，<font color="red">添加节点、分配槽、删除节点的过程，不用停止集群，不阻塞集群的其他操作</font>。命令小结</p>
+
+<pre class="prettyprint"><code class=" hljs vala"><span class="hljs-preprocessor">#向集群中添加节点，7037是新增节点，7036是集群中已有的节点</span>
+./redis-trib.rb add-node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7037</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7036</span>
+<span class="hljs-preprocessor">#重新分配槽</span>
+./redis-trib.rb reshard <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7031</span>
+<span class="hljs-preprocessor">#指定当前节点的主节点</span>
+cluster replicate cf48228259def4e51e7e74448e05b7a6c8f5713f
+<span class="hljs-preprocessor">#删除节点</span>
+./redis-trib.rb del-node <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.128</span>:<span class="hljs-number">7037</span> <span class="hljs-string">'a56461a171334560f16652408c2a45e629d268f6'</span></code></pre>
+
+<p>到此，redis的集群搭建、分区原理、集群增加节点以及删除节点的主要内容已经简要介绍完毕。</p>
+
+<p>转载来源：<a href="http://www.cnblogs.com/hjwublog/p/5681700.html">http://www.cnblogs.com/hjwublog/p/5681700.html</a></p></div>
+        <script  type="text/javascript">
+            $(function () {
+                $('pre.prettyprint code').each(function () {
+                    var lines = $(this).text().split('\n').length;
+                    var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                    $(this).addClass('has-numbering').parent().append($numbering);
+                    for (i = 1; i <= lines; i++) {
+                        $numbering.append($('<li/>').text(i));
+                    };
+                    $numbering.fadeIn(1700);
+                });
+            });
+        </script>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad" style="float: right;" data-mod="popu_172">
+<a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"  style="background-position:0 -52px !important"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"style="background-position:0 -104px !important"></a>
+<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"style="background-position:0 -260px !important"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"style="background-position:0 -208px !important"></a>
+<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"style="background-position:0 -1612px !important" ></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   <link rel="stylesheet" href="http://static.blog.csdn.net/css/blog_detail.css" />
+
+    
+<!--172.16.140.12-->
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+ 
+
+
+        <div id="digg" ArticleId="52352894" >
+            <dl id="btnDigg" class="digg digg_disable"  onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>2</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_disable"  onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>1</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" >&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" >&nbsp;</a></div>
+    <script type="text/javascript">
+                function btndigga() {
+                    $(".tracking-ad[data-mod='popu_222'] a").click();
+                }
+                function btnburya() {
+                    $(".tracking-ad[data-mod='popu_223'] a").click();
+                }
+            </script>
+
+   <ul class="article_next_prev">
+                <li class="prev_article"><span  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='/javaloveiphone/article/details/52327240';">上一篇</span><a href="/javaloveiphone/article/details/52327240" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">分布式缓存技术redis学习系列（三）——redis高级应用（主从、事务与锁、持久化）</a></li>
+                <li class="next_article"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='/javaloveiphone/article/details/52355180';">下一篇</span><a href="/javaloveiphone/article/details/52355180" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian'])">分布式缓存技术redis学习系列（五）——spring-data-redis与JedisPool的区别、使用ShardedJedisPool与spring集成的实现及一致性哈希分析</a></li>
+    </ul>
+
+    <div style="clear:both; height:10px;"></div>
+
+
+        <div class="similar_article"  style="display:none">
+                <h4>我的同类文章</h4>
+                <div class="similar_c"style="margin:20px 0px 0px 0px">
+                    <div class="similar_c_t">
+                                <label class="similar_cur">
+                                    <span  style="cursor:pointer"  onclick="GetCategoryArticles('6383102','javaloveiphone','foot','52352894');">redis<em>（10）</em></span>
+                                </label>
+                    </div>
+                   
+                    <div class="similar_wrap tracking-ad" data-mod="popu_141"  style="max-height:195px;">
+                        <a href="http://blog.csdn.net" style="display:none">http://blog.csdn.net</a>
+                        <ul class="similar_list fl">                          
+                        </ul>
+
+                        <ul class="similar_list fr">                           
+                        </ul>
+                    </div>
+                </div>
+            </div>    
+    <script  type="text/javascript">
+        $(function () {
+            GetCategoryArticles('6383102', 'javaloveiphone','foot','52352894');
+        });
+    </script>
+      
+</div>
+
+     <div>
+             <ins data-revive-zoneid="206" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins> 
+    </div>
+
+<div id="suggest"></div>
+         <script  language="javascript" type='text/javascript'>     
+             $(function(){
+                 $.get("/javaloveiphone/svc/GetSuggestContent/52352894",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+
+<style>
+.blog-ass-articl dd {
+color: #369;
+width: 99%; /*修改行*/
+float: left;
+overflow: hidden;
+font: normal normal 12px/23px "SimSun";
+height: 23px;
+margin: 0;
+padding: 0 0 0 10px;
+margin-right: 30px;
+background: url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;
+}
+</style>
+
+ <link rel="stylesheet" href="http://static.blog.csdn.net/css/replace.css"/>
+<div id="relate" data-mod="popu_218"  class="tracking-ad">
+        <div class="relate_t">
+            <h3><span>参考知识库</span></h3>
+        </div>
+        <div class="relate_c">
+        </div>
+</div>
+ 
+
+<dl class="blog-ass-articl" id="res-relatived" > 
+    <div class="embody embody_b" id="libkeyparent"  style="display:none">
+            <span class="embody_t">更多资料请参考：</span>
+            <div class="embody_c" id="libkey"></div>
+    </div>
+
+
+     <dt><span>猜你在找</span></dt>    
+
+
+   
+
+
+    <div id="adCollege" style="width: 42%;float: left;"> 
+        <script src="http://csdnimg.cn/jobreco/job_reco.js" type="text/javascript"></script> 
+        <script type="text/javascript">
+            csdn.position.showEdu({
+                sourceType: "blog",
+                searchType: "detail",
+                searchKey: "52352894",
+                username: "",
+                recordcount: "5",
+                containerId: "adCollege" //容器DIV的id。 
+            });
+            
+            setEduLoc();
+
+            function setEduLoc() {               
+                var edus = $("#adCollege div dd a");
+                if (edus.length == 0) {
+                    setTimeout(function () {
+                        setEduLoc();
+                    }, 500);
+                }
+                else {
+                    var eduLoc = "?ref=blog&loc=0";
+                    $.each(edus, function (index,item) {
+                        var href = $(this).attr("href") + eduLoc;
+                        $(this).attr("href", href);
+                    });
+                }
+            }
+
+        </script> 
+    </div>  
+
+    
+     <div id="res"  data-mod="popu_36"  class="tracking-ad" style="width: 42%;float: left;margin-right: 30px;"></div>
+   
+</dl>
+
+
+<script type="text/javascript">
+    $(function () {
+        setTimeout(function () {
+            var searchtitletags = '分布式缓存技术redis学习系列（四）——redis高级应用（集群搭建、集群分区原理、集群操作）' + ',' + $("#tags").html();
+            searchService({
+                index: 'blog',
+                query: searchtitletags,
+                from: 5,
+                size: 5,
+                appendTo: '#res',
+                url: 'recommend',
+                his: 2,
+                client: "blog_cf_enhance",
+                tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+            });
+        }, 500);
+    });    
+
+ </script>  
+
+
+    <div id="ad_cen">        
+                      <ins data-revive-zoneid="199" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    </div>  
+
+    <!-- 广告位开始 -->
+    <ins data-revive-zoneid="72" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    <!-- 广告位结束 -->
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list">
+    </div>
+    <div id="comment_bar">
+    </div>
+    <div id="comment_form">
+    </div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '52352894';
+    var commentscount = 0;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top"  style="bottom:60px;">
+
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="http://static.blog.csdn.net/images/blog-icon-reply.png" alt="快速回复">
+        </a>    
+    <a id="d-top-a" class="btn btn-top backtop"  style="display: none;" title="返回顶部" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])" style="">         
+         <img src="http://static.blog.csdn.net/images/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+<div class="tag_list" style="display:none"></div>
+  <script  language="javascript" type='text/javascript'>     
+      $(function(){
+              setTimeout(function(){
+                  $.get("/javaloveiphone/svc/GetTagContent",function(data){
+                      $(".tag_list").html(data).show();
+                  });     
+              });
+          },500);                       
+ </script> 
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });         
+
+        },200);  
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }   
+
+</script>
+ <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/async_new.js"></script>      
+
+
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/javaloveiphone" target="_blank">
+    <img src="http://avatar.csdn.net/0/A/9/1_javaloveiphone.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/javaloveiphone" class="user_name" target="_blank">javaloveiphone</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter"  title="[发私信]" onclick="window.open('http://msg.csdn.net/letters/model?receiver=javaloveiphone','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+                                            <a  target="_blank">
+                                                    <img src="http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/chizhiyiheng.png" onmouseover="m_over_m(this,4)" onmouseout="m_out_m()" alt="2" >
+                                            </a>
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>403915次</span></li>
+    <li>积分：<span>5542</span> </li>    
+    <li >等级： <span style="position:relative;display:inline-block;z-index:1" >
+            <img src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog6.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：5542 </div>
+        </span>  </li>
+    <li>排名：<span>第3916名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>183篇</span></li>
+    <li>转载：<span>68篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>52条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字" /></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog" />
+        <input type="hidden" name="q" id="inputQ" />
+        <input type="hidden" name="t" value="blog" />
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";
+            window.location.href = url;
+        }   
+    });
+</script><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203223" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">tomcat</a><span>(9)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203224" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">oracle</a><span>(14)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203225" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">sqlserver</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203228" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">myeclipse</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203230" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">jdk</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203232" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">mysql</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203234" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">j2se</a><span>(34)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203236" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">windows系统</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1203595" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">javaweb项目</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228134" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">js</a><span>(21)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228136" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">jquery</a><span>(9)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228150" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">OJNL</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228151" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">JSP</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228159" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">linux</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1228161" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">struts2</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1233139" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">EL+JSTL</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1237833" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">异常</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1241072" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">log4j</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1265163" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">hibernate</a><span>(7)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1275136" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">servlet</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1275333" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Spring</a><span>(29)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/1370162" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">webservice</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5817695" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">正则表达式</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5818471" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">easyui</a><span>(8)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5818473" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">css</a><span>(33)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5836809" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">javascript</a><span>(15)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5846463" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">form</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/5846465" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">ajax</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6173829" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">html</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6334367" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Maven</a><span>(15)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6357168" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">quartz</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6367140" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Mybatis</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6368496" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Spring-MVC</a><span>(13)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6372567" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">dubbo</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6373253" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">zookeeper</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6383102" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">redis</a><span>(11)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6402196" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">sso</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6402197" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">cas</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6409608" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">eclipse</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6436924" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">多线程</a><span>(12)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6506669" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">nexus</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6544934" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">activeMQ</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6544935" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">JMS</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6632572" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">validate</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6727428" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">项目总结</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6745861" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">svn</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6775182" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">PDM</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/javaloveiphone/article/category/6775183" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">CDM</a><span>(1)</span>
+                </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="/javaloveiphone/article/month/2017/03">2017年03月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2017/02">2017年02月</a><span>(10)</span></li><li><a href="/javaloveiphone/article/month/2017/01">2017年01月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2016/12">2016年12月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2016/11">2016年11月</a><span>(9)</span></li><li><a href="/javaloveiphone/article/month/2016/10">2016年10月</a><span>(2)</span></li><li><a href="/javaloveiphone/article/month/2016/09">2016年09月</a><span>(11)</span></li><li><a href="/javaloveiphone/article/month/2016/08">2016年08月</a><span>(34)</span></li><li><a href="/javaloveiphone/article/month/2016/07">2016年07月</a><span>(14)</span></li><li><a href="/javaloveiphone/article/month/2016/06">2016年06月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2016/04">2016年04月</a><span>(14)</span></li><li><a href="/javaloveiphone/article/month/2016/03">2016年03月</a><span>(11)</span></li><li><a href="/javaloveiphone/article/month/2016/01">2016年01月</a><span>(2)</span></li><li><a href="/javaloveiphone/article/month/2015/12">2015年12月</a><span>(15)</span></li><li><a href="/javaloveiphone/article/month/2015/11">2015年11月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2015/10">2015年10月</a><span>(12)</span></li><li><a href="/javaloveiphone/article/month/2015/09">2015年09月</a><span>(9)</span></li><li><a href="/javaloveiphone/article/month/2015/06">2015年06月</a><span>(4)</span></li><li><a href="/javaloveiphone/article/month/2015/05">2015年05月</a><span>(7)</span></li><li><a href="/javaloveiphone/article/month/2013/12">2013年12月</a><span>(1)</span></li><li><a href="/javaloveiphone/article/month/2013/11">2013年11月</a><span>(1)</span></li><li><a href="/javaloveiphone/article/month/2013/07">2013年07月</a><span>(5)</span></li><li><a href="/javaloveiphone/article/month/2013/04">2013年04月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2013/03">2013年03月</a><span>(6)</span></li><li><a href="/javaloveiphone/article/month/2013/02">2013年02月</a><span>(3)</span></li><li><a href="/javaloveiphone/article/month/2013/01">2013年01月</a><span>(1)</span></li><li><a href="/javaloveiphone/article/month/2012/12">2012年12月</a><span>(4)</span></li><li><a href="/javaloveiphone/article/month/2012/11">2012年11月</a><span>(19)</span></li><li><a href="/javaloveiphone/article/month/2012/10">2012年10月</a><span>(4)</span></li><li><a href="/javaloveiphone/article/month/2012/09">2012年09月</a><span>(26)</span></li><li><a href="/javaloveiphone/article/month/2012/08">2012年08月</a><span>(6)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="/javaloveiphone/article/details/8133772" title="response.getWriter().write()与out.print()的区别">response.getWriter().write()与out.print()的区别</a><span>(31905)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8154791" title="servlet的执行原理与生命周期">servlet的执行原理与生命周期</a><span>(20566)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7994313" title="log4j.properties配置与加载应用">log4j.properties配置与加载应用</a><span>(20013)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7956237" title="EL表达式与JSTL(C)标签">EL表达式与JSTL(C)标签</a><span>(16759)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/49492701" title="使用easyui框架form控件，单选按钮radio或复选框checkbox样式问题">使用easyui框架form控件，单选按钮radio或复选框checkbox样式问题</a><span>(16612)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/9499159" title="java导入与导出excel，兼容excel2003以及excel2007">java导入与导出excel，兼容excel2003以及excel2007</a><span>(15559)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7932993" title="js中使用s（c）标签">js中使用s（c）标签</a><span>(14990)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/50057983" title="easyui tree/TreeGrid使用：逐级加载、指定节点刷新、全部展开">easyui tree/TreeGrid使用：逐级加载、指定节点刷新、全部展开</a><span>(9644)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8112428" title="jquery的学习总结之元素选择、查找、过滤">jquery的学习总结之元素选择、查找、过滤</a><span>(7976)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8184941" title="hibernate的get和load区别">hibernate的get和load区别</a><span>(7302)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/javaloveiphone/article/details/8154791" title="servlet的执行原理与生命周期">servlet的执行原理与生命周期</a><span>(11)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52143986" title="Spring整理系列(07)——通过Spring Resource接口获取资源">Spring整理系列(07)——通过Spring Resource接口获取资源</a><span>(5)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/7956237" title="EL表达式与JSTL(C)标签">EL表达式与JSTL(C)标签</a><span>(4)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8133772" title="response.getWriter().write()与out.print()的区别">response.getWriter().write()与out.print()的区别</a><span>(4)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52439613" title="CAS实现单点登录SSO执行原理探究(终于明白了)">CAS实现单点登录SSO执行原理探究(终于明白了)</a><span>(3)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/50855436" title="offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式">offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式</a><span>(3)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52253210" title="Spring整理系列(17)————循序渐进了解spring事务管理的几种方式">Spring整理系列(17)————循序渐进了解spring事务管理的几种方式</a><span>(3)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/49492317" title="easyui tree节点取消选择方法">easyui tree节点取消选择方法</a><span>(2)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/8179358" title="hibernate的QBE和QBC">hibernate的QBE和QBC</a><span>(2)</span>
+</li>
+<li>
+<a href="/javaloveiphone/article/details/52243984" title="Spring整理系列(16)——通过单元测试理解spring容器以及dubbo+zookeeper单元测试异常处理">Spring整理系列(16)——通过单元测试理解spring容器以及dubbo+zookeeper单元测试异常处理</a><span>(2)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend">
+<ul>
+<li><a href="http://blog.csdn.net/blogdevteam/article/details/60576936" target="_blank">* CSDN日报20170306——《程序员转行为什么这么难》</a></li>
+<li><a href="http://blog.csdn.net/hejjunlin/article/details/60480109" 
+target="_blank">* 直播技术总结（四）音视频数据压缩及编解码基础 </a></li>
+<li><a href="http://blog.csdn.net/qibin0506/article/details/60478869"target="_blank">* 第一个PWA程序-聊天室</a></li>
+<li><a href="http://blog.csdn.net/cyq1162/article/details/60578454" target="_blank">* 一个想法照进现实-《IT连》创业项目：万事开头难</a></li>
+<li><a href="http://blog.csdn.net/jiangwei0910410003/article/details/54879836" 
+target="_blank">* Android"挂逼"修炼之行---防自动抢红包外挂原理解析</a></li>
+
+
+</ul></ul>
+</div>
+
+
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="/javaloveiphone/article/details/8154791#comments">servlet的执行原理与生命周期</a>
+    <p style="margin:0px;"><a href="/Monkey_D_Jie" class="user_name">Monkey_D_Jie</a>:
+谢谢了！！！
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/52439613#comments">CAS实现单点登录SSO执行原理探究(终于明白了)</a>
+    <p style="margin:0px;"><a href="/forthemyth" class="user_name">forthemyth</a>:
+@forthemyth:讲的更详细全面一点，当然，不够亲民
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/52439613#comments">CAS实现单点登录SSO执行原理探究(终于明白了)</a>
+    <p style="margin:0px;"><a href="/forthemyth" class="user_name">forthemyth</a>:
+http://www.cnblogs.com/gxbk629/p/4473569.html这篇文章更...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50237597#comments">easyui ValidateBox validType字段设置多个校验规则</a>
+    <p style="margin:0px;"><a href="/javaloveiphone" class="user_name">javaloveiphone</a>:
+// 混合验证  五个参数，第一个是正则表达式，第二个是错误提示信息，第三个是调用的url，第四个是...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50237597#comments">easyui ValidateBox validType字段设置多个校验规则</a>
+    <p style="margin:0px;"><a href="/qq_35511027" class="user_name">qq_35511027</a>:
+请问一下大神,第三个多个校验的代码怎么写?
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50237597#comments">servlet的执行原理与生命周期</a>
+    <p style="margin:0px;"><a href="/qqxyy99" class="user_name">qqxyy99</a>:
+特别详细，很清晰
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/51098972#comments">由html,body{height:100%}引发的对html和body的思考</a>
+    <p style="margin:0px;"><a href="/masuwen" class="user_name">masuwen</a>:
+恩，学习了。
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/49492317#comments">easyui tree节点取消选择方法</a>
+    <p style="margin:0px;"><a href="/lhs472194266" class="user_name">lhs472194266</a>:
+很好,功能很强大!
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50855436#comments">offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式</a>
+    <p style="margin:0px;"><a href="/javaloveiphone" class="user_name">javaloveiphone</a>:
+@qq_16456919:欢迎转载，标明出处即可
+    </p>
+    </li>
+    <li>
+   
+         <a href="/javaloveiphone/article/details/50855436#comments">offsetWidth、clientWidth、width、scrollWidth区别及js与jQuery获取的方式</a>
+    <p style="margin:0px;"><a href="/qq_16456919" class="user_name">qq_16456919</a>:
+你好，请问可以转载么？当做自己的笔记
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+
+
+                   <!-- 广告位开始 --> 
+                    <ins data-revive-zoneid="190" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins> 
+                    <!-- 广告位结束 -->
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+<script type="text/javascript" src="http://c.csdnimg.cn/rabbit/cnick/cnick.js"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js"></script>
+
+
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=1328814"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/JavaScript1.js"></script>
+
+    <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js"></script>
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+
+        $(".bar").show();
+    });
+</script>
+
+
+
+
+
+    </div>
+      <!--new top-->
+    
+    <script id="csdn-toolbar-id" btnId="header_notice_num" wrapId="note1" count="5" subCount="5" type="text/javascript" src="http://c.csdnimg.cn/public/common/toolbar/js/toolbar.js"></script>     <!--new top-->
+   
+    <link href="http://c.csdnimg.cn/comm_ask/css/ask_float_block.css" type="text/css" rel="stylesheet" />
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/wmd.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/showdown.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/prettify.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/apps/ask_float_block.js'></script>
+   
+
+   
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+   </div>
+
+    <link rel="stylesheet" href="http://static.blog.csdn.net/css/blog_code.css" />
+    <script type="text/javascript" src="http://static.blog.csdn.net/scripts/saveToCode.js"></script>
+      <script type="text/javascript" src="//csdnimg.cn/rabbit/tracking-ad/main.js?75eacd8"></script>
+
+     <link rel="stylesheet" href="http://static.blog.csdn.net/css/fa.css" />
+
+    <div class="pop_CA_cover"  style="display:none"></div>
+    <div class="pop pop_CA"  style="display:none">
+          <div class="CA_header">
+            收藏助手
+            <span class="cancel_icon"  id="fapancle"  onclick="$('.pop_CA').hide();$('.pop_CA_cover').hide();"></span>
+          </div>
+          <iframe src="" id="fa" frameborder="0" width="100%" height="360"  scrolling="no" />
+    </div>
+</body>
+</html>   
+ 
