@@ -1,0 +1,21 @@
+
+--------------------------配置--------------------------
+始集群搭建，首先修改配置文件。
+
+[root@spg redis-3.0.5]#vi redis.conf
+修改如下几处：
+port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes
+------------------------准备工作----------------------------
+
+安装ruby：yum install ruby
+安装redis和ruby的连接：gem intall redis   
+--------------------------安装--------------------------
+replicas:标识一个master需要几个slave
+./redis-trib.rb  create --replicas 1 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 127.0.0.1:7006
+
+------------------------检查----------------------------
+ redis-trib.rb check 127.0.0.1:7000
