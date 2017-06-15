@@ -22,7 +22,7 @@ static synchronized相当于Something.synchronized.
 
     结论：A: synchronized static是某个类的范围，synchronized static cSync{}防止多个线程同时访问这个    类中的synchronized static 方法。它可以对类的所有对象实例起作用。
   
-               B: synchronized 是某实例的范围，synchronized isSync(){}防止多个线程同时访问这个实例中的synchronized 方法。
+        B: synchronized 是某实例的范围，synchronized isSync(){}防止多个线程同时访问这个实例中的synchronized 方法。
 
 
 

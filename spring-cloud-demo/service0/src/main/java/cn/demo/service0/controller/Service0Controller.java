@@ -25,7 +25,7 @@ public class Service0Controller {
 
   @GetMapping("test")
   String test() {
-    System.err.println("test1");
+    System.err.println(test);
     return FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.sss").format(new Date());
   }
 

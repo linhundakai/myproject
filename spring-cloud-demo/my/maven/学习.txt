@@ -1,0 +1,90 @@
+-------------------------------mvn命令-------------------------------------------------
+打包>mvn clean install -DskipTests
+1. mvn help:describe 你是否因为记不清某个插件有哪些goal而痛苦过,你是否因为想不起某个goal有哪些参数而苦恼,那就试试这个命令吧,它会告诉你一切的. 参数: 1. -Dplugin=pluginName 2. -Dgoal(或-Dmojo)=goalName:与-Dplugin一起使用,它会列出某个插件的goal信息,如果嫌不够详细,同样可以加-Ddetail.(注:一个插件goal也被认为是一个 “Mojo”) 下面大家就运行mvn help:describe -Dplugin=help -Dmojo=describe感受一下吧!
+
+2. mvn archetype:generate 你是怎么创建你的maven项目的?是不是像这样:mvn archetype:create -DarchetypeArtifactId=maven-archetype-quickstart -DgroupId=com.ryanote -Dartifact=common,如果你还再用的话,那你就out了,现代人都用mvn archetype:generate了,它将创建项目这件枯燥的事更加人性化,你再也不需要记那么多的archetypeArtifactId,你只需输入archetype:generate,剩下的就是做”选择题”了.
+
+3. mvn tomcat:run 用了maven后,你再也不需要用eclipse里的tomcat来运行web项目(实际工作中经常会发现用它会出现不同步更新的情况),只需在对应目录(如/ryanote)里运行 mvn tomat:run命令,然后就可在浏览器里运行http://localhost:8080/ryanote查看了.如果你想要更多的定制,可以在pom.xml文件里加下面配置: 01 02 03 04 org.codehaus.mojo 05 tomcat-maven-plugin 06 07 /web 08 9090 09 10 11 12 当然你也可以在命令里加参数来实现特定的功能,下面几个比较常用: 1. 跳过测试:-Dmaven.test.skip(=true) 2. 指定端口:-Dmaven.tomcat.port=9090 3. 忽略测试失败:-Dmaven.test.failure.ignore=true 当然,如果你的其它关联项目有过更新的话,一定要在项目根目录下运行mvn clean install来执行更新,再运行mvn tomcat:run使改动生效.
+
+4. mvnDebug tomcat:run 这条命令主要用来远程测试,它会监听远程测试用的8000端口,在eclipse里打开远程测试后,它就会跑起来了,设断点,调试,一切都是这么简单.上面提到的那几个参数在这里同样适用.
+样例：
+tomcat7:run -Dmaven.tomcat.uriEncoding=UTF-8 -Dmaven.tomcat.path=/ -Dmaven.tomcat.port=8080
+-Dmaven.tomcat.path=/ 这个配置可以不加，默认使用/${artifactId}，此处的artifactId即建pom.xml文件时写的那个artifactId，一般为项目名。如果配置为/的话，届时访问的路径就是hostname:port/，如果配置为/test的话，则访问路径是hostname:port/test，相当于namesapce的作用。
+
+5. mvn dependency:sources 故名思义,有了它,你就不用到处找源码了,运行一下,你项目里所依赖的jar包的源码就都有了
+
+--------------------------------------------------------------------------------
+
+ 1、创建一个新的Maven项目：
+mvn archetype:create -DgroupId=org.sonatype.mavenbook.ch3 -DartifactId=simple -DpackageName=org.sonatype.mavenbook
+
+2、构建打包应用：
+mvn install[在pom.xml同级目录下执行]
+
+3、查看项目完整的pom.xml文件，包括系统默认设置以及用户自定义设置：
+mvn help:effective-pom
+
+4、生成报告或者文档：
+mvn site
+
+5、mvn exec:Java执行目标类
+mvn exec:java -Dexec.mainClass=org.sonatype.mavenbook.weather.Main
+
+6、查看插件的完整描述：
+mvn help:describe -Dplugin=exec -Dfull
+
+7、找出该项目所依赖的项目(jar)列表：
+mvn dependency:resolve
+mvn dependency:analyze(找出项目非直接依赖)
+结果如下：
+[INFO] The following files have been resolved:
+[INFO]    com.ibm.icu:icu4j:jar:2.6.1:compile
+[INFO]    commons-collections:commons-collections:jar:3.1:compile
+[INFO]    commons-lang:commons-lang:jar:2.1:compile
+[INFO]    dom4j:dom4j:jar:1.6.1:compile
+[INFO]    jaxen:jaxen:jar:1.1.1:compile
+[INFO]    jdom:jdom:jar:1.0:compile
+[INFO]    junit:junit:jar:3.8.1:test
+[INFO]    log4j:log4j:jar:1.2.14:compile
+[INFO]    oro:oro:jar:2.0.8:compile
+[INFO]    velocity:velocity:jar:1.5:compile
+[INFO]    xalan:xalan:jar:2.6.0:compile
+[INFO]    xerces:xercesImpl:jar:2.6.2:compile
+[INFO]    xerces:xmlParserAPIs:jar:2.6.2:compile
+[INFO]    xml-apis:xml-apis:jar:1.0.b2:compile
+[INFO]    xom:xom:jar:1.0:compile
+
+8、查看整个项目的依赖树：
+mvn dependency:tree
+结果如下：
+[INFO] org.sonatype.mavenbook.ch04:simple-weather:jar:1.0
+[INFO] +- log4j:log4j:jar:1.2.14:compile
+[INFO] +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  \- xml-apis:xml-apis:jar:1.0.b2:compile
+[INFO] +- jaxen:jaxen:jar:1.1.1:compile
+[INFO] |  +- jdom:jdom:jar:1.0:compile
+[INFO] |  +- xerces:xercesImpl:jar:2.6.2:compile
+[INFO] |  \- xom:xom:jar:1.0:compile
+[INFO] |     +- xerces:xmlParserAPIs:jar:2.6.2:compile
+[INFO] |     +- xalan:xalan:jar:2.6.0:compile
+[INFO] |     \- com.ibm.icu:icu4j:jar:2.6.1:compile
+[INFO] +- velocity:velocity:jar:1.5:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  \- oro:oro:jar:2.0.8:compile
+[INFO] \- junit:junit:jar:3.8.1:test
+
+9、查看完整的依赖，包括那些因为冲突而被拒绝引入的依赖：
+ mvn install -X
+
+10、打包应用(jar)：
+mvn install assembly:assembly
+
+11、在 Jetty Servlet 容器中启动你的 web 应用：
+mvn jetty:run
+
+12、重新编译：
+mvn compile
+
+
+------------------------------------------------------------------------------------------------------

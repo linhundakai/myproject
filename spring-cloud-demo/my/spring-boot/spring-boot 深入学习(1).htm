@@ -1,0 +1,1084 @@
+
+<link rel="stylesheet" href="http://static.blog.csdn.net/code/prettify.css" />
+<script type="text/javascript" src="http://static.blog.csdn.net/code/prettify.js"></script>
+
+<script type="text/javascript">
+    var username = "yeyincai";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/yeyincai";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+
+    var fileName = '51702059';
+    var commentscount = 1;
+    var islock = false
+
+   window.quickReplyflag = true;
+            
+             var isBole = false;
+            
+
+</script>
+
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+   
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+    <script type="text/javascript" src="http://c.csdnimg.cn/pubfooter/js/tracking.js" charset="utf-8"></script> 
+   <!-- <script type="text/javascript">
+        var protocol = window.location.protocol;
+        document.write('<script type="text/javascript" src="' + protocol + '//csdnimg.cn/pubfooter/js/repoAddr2.js?v=' + Math.random() + '"></' + 'script>');
+    </script>-->
+     <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico" />    
+     <link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+
+
+    <script src="http://csdnimg.cn/public/common/libs/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+
+     <!-- ad begin -->
+         <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/tracking.js"></script>
+    <!-- ad end-->
+
+      <script src="//csdnimg.cn/rabbit/tracking-ad/main.js"></script>
+
+    <link rel="stylesheet" href="http://static.csdn.net/public/common/toolbar/css/index.css">
+    <link rel="stylesheet" href="http://csdnimg.cn/public/common/libs/bootstrap/css/bootstrap.css">
+ 	<link rel="stylesheet" href="http://csdnimg.cn/public/static/css/avatar.css">
+    <link rel="stylesheet" href="http://static.blog.csdn.net/skin/skin2-template/css/common.css">
+    <!-- [if IE 7]-->
+    <link rel="stylesheet" href="http://static.blog.csdn.net/skin/skin2-template/css/font-awesome.min.css">
+    <!-- [endif]-->
+    <link rel="stylesheet" href="http://static.blog.csdn.net/skin/skin2-template/css/main.css">
+    
+     <link rel="stylesheet" href="http://static.blog.csdn.net/skin/skin2-template/css/jquery.rollbar.css">
+    <link rel="stylesheet" href="http://static.blog.csdn.net/skin/skin2-template/css/style.css">
+    
+    
+    <!-- [if lt IE 9]-->
+    <script src="http://static.blog.csdn.net/skin/skin2-template/js/libs/html5shiv.min.js"></script>
+    <!-- [endif]-->
+	<script src="http://static.blog.csdn.net/scripts/skintemplatecommon.js" type="text/javascript"></script>
+
+    <script src="http://static.blog.csdn.net/scripts/skintemplateprovider.js" type="text/javascript"></script>      
+	<script src="http://static.blog.csdn.net/scripts/skintemplatecomment.js" type="text/javascript"></script>
+
+    <script src="http://c.csdnimg.cn/rabbit/cnick/cnick.js" type="text/javascript"></script>      
+   
+       
+    
+
+      <script type="text/javascript">
+          $(function () {
+              setTimeout(function () {
+                  $(".mess_name").each(function (index, item) {
+                      var u = $(this).text().split('：')[0].toString().replace("回复", "")
+                      var thisComment = $(this);
+                      if (u) {
+                          $.getJSON("https://passport.csdn.net/get/nick?callback=?", { users: u }, function (a) {
+                              if (a != null && a.data != null && a.data.length > 0) {
+                                  nick = a.data[0].n;
+                                  if (u != nick) {
+                                      thisComment.text(thisComment.text().replace(u, nick));
+                                  }
+                              }
+                          });
+                      }
+                  });
+
+                  $(".username").each(function (index, item) {
+                      var u = $(this).text().split('：')[0].toString().replace("回复", "")
+                      var thisComment = $(this);
+                      if (u) {
+                          $.getJSON("https://passport.csdn.net/get/nick?callback=?", { users: u }, function (a) {
+                              if (a != null && a.data != null && a.data.length > 0) {
+                                  nick = a.data[0].n;
+                                  if (u != nick) {
+                                      thisComment.text(thisComment.text().replace(u, nick));
+                                  }
+                              }
+                          });
+                      }
+                  });
+
+              }, 200);
+
+          });
+      </script>
+
+    <title>spring-boot 深入学习 - 博客频道 - CSDN.NET</title>	
+  </head>
+  <body>
+
+       <!-- 广告位开始 -->
+        <ins data-revive-zoneid="149" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    <!-- 广告位结束 -->
+
+   <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="http://c.csdnimg.cn/public/common/toolbar/js/html.js" type="text/javascript"></script>
+    <div class="blog_left">
+      <div class="blog_l_c">
+        <h2 class="blog_l_t">小牛的成长史</h2>
+        <h6 class="blog_l_sign"></h6>
+        <div class="item_wrap">
+          <dl class="item_l">
+            <dt class="item">49</dt>
+            <dd class="item_name">原创</dd>
+          </dl>
+          <dl class="item_l">
+            <dt class="item">0</dt>
+            <dd class="item_name">转载</dd>
+          </dl>
+          <dl class="item_l">
+            <dt class="item">0</dt>
+            <dd class="item_name">译文</dd>
+          </dl>
+          <dl class="item_l">
+            <dt class="item">18</dt>
+            <dd class="item_name">评论</dd>
+          </dl>
+          <dl class="item_l">
+            <dt class="item">37544</dt>
+            <dd class="item_name">访问</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="blog_copyright">
+        <p><span>京 ICP 证 070598 号</span><img src="http://static.blog.csdn.net/skin/skin2-template/images/copyright.png" alt="img"></p>
+        <p>
+          Copyright © 1999-2016,
+          <br/>
+          CSDN.NET, All Rights Reserved
+        </p>
+       </div>
+    </div>
+    <div id="skin_m" class="skin_m">
+      <div id="skin_center" class="skin_center">
+          <div class="skin_center_t">
+                <h2 class="mod_most"></h2>
+                <!--include ../modules/mod_list.jade-->
+                <div class="skin_list">
+                  <dl class="list_c clearfix detail_list">
+                    <dt>
+                      <div class="date">
+                        <div class="date_t"><span>2016</span><em>六月</em></div>
+                        <div class="date_b">17</div>
+                      </div>
+                    </dt>
+                    <dd>
+                      <div class="skin_icon"><a href="javascript:;" class="set_top">置</a><a href="javascript:;" class="set_old">原</a></div>
+                      <h3 class="list_c_t"><a href="/yeyincai/article/details/51702059">spring-boot 深入学习</a></h3>  
+                        <div class="list_c_Title">
+                          <p class="detail_p">
+                            <label><span>分类：</span><em onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">微服务</em></label>
+                         </p>
+                         <p class="read_r">
+                            <label><i class="fa fa-eye" style="cursor:default"></i><span style="cursor:default"> （2127）</span></label>
+                            <label><i class="fa fa-comment-o"style="cursor:default"></i><span  style="cursor:default"> （1）</span></label>
+                             
+                             
+
+                             
+                          </p>
+                        </div>
+                      <div class="skin_detail" id="article_content">
+                        
+<h2><span style="font-size:14px">--在使用spring-boot的时候踩过太多的坑，很多都是因为不懂spring真正的原理造成的，所以写下这么篇文章，希望这篇文章能够帮助大家理解spring真正原理少走弯路</span></h2>
+<div><span style="font-size:18px"><br>
+</span></div>
+<h3>一:启动原理</h3>
+<div><br>
+</div>
+<div>--每个程序都有一个主入口，也就是main方法，main里面调用SpringApplication.run()启动整个spring-boot程序<br>
+</div>
+<div><pre code_snippet_id="1720302" snippet_file_name="blog_20160617_1_9922474"  code_snippet_id="1720302" snippet_file_name="blog_20160617_1_9922474" name="code" class="java">eg:一个最简单的spring-boot启动类
+@SpringBootApplication
+public class Springrun{
+	public static void main(String[] args) {
+		SpringApplication.run(Springrun.class, args);
+	}
+}</pre>解释：<br>
+--@SpringBootApplication继承了@Configuration、@EnableAutoConfiguration、@ComponentScan，这三个注解的特性后面会讲到，默认扫描的包是以SpringApplication.run(Springrun.class, args) 参数springrun.class所在的包作为base package。<br>
+<span style="color:#ff0000">注意：</span>如果想要启动整个程序，这个类必须要放到根包里面去。<br>
+<br>
+</div>
+<div>run方法执行顺序:<br>
+1.初始化SpringApplicationRunListeners并且开始监听<br>
+2.加载StandardEnvironment(包括系统参数 &nbsp; 环境变量参数 properties/yml文件 &nbsp; profiles)<br>
+3.把environment set到Listeners里面<br>
+4.默认通过AnnotationConfigApplicationContext扫描所有的注解类，创建并且注册bean（默认都是创建的单列）<br>
+5.创建context，并且把environment set到context里面<br>
+</div>
+<div>备注:如果需要初始化spring-boot即将完成的时候马上去做一些事情，我们可以实现CommandLineRunner该接口<br>
+</div>
+<div><br>
+</div>
+<div>分析:</div>
+<div>SpringApplication在初始化的时候，会去创建environment，这里默认是创建的StandardEnvironment，接着这个类会去加载sources，其uml图如下</div>
+<div><img src="http://img.blog.csdn.net/20160617185753607?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+</div>
+<div><br>
+</div>
+<div>接着会创建spring的启动模式，spring的启动模式有很多：xml配置启动、annotation启动、文件启动、web启动等等如下</div>
+<div><img src="http://img.blog.csdn.net/20160617190022719?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+</div>
+<div><br>
+</div>
+<div>spring-boot默认是选择AnnotationConfigApplicationContext启动上下文，其类图如下</div>
+<div><img src="http://img.blog.csdn.net/20160617190241444?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+</div>
+<div>这个类直接间接实现了很多接口，包括beanFactory、resourceresolver、evenPublisher等等，集成所有spring需要的东西。</div>
+<div><br>
+</div>
+<div>接着会去调用其父类AbstactApplicationContext.refresh()创建bean，这个方法只能调用一次。该方法执行的内容如下</div>
+<div><img src="http://img.blog.csdn.net/20160617190759539?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+</div>
+<div><br>
+</div>
+<div>其方法里面所使用的beanFactory是DefaultListableBeanFactory，次类的类图如下：</div>
+<div><img src="http://img.blog.csdn.net/20160617191000040?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+</div>
+<div>这个类解决的问题是创建bean，包括一些简单的bean，还有一些有依赖的bean。</div>
+<div><br>
+</div>
+<div><br>
+</div>
+<div><span style="color:#ff0000">注意</span>：<br>
+在运行main经常程序会退出，抛出Process finished with exit code 0，原因是程序运行main方法结束退出，出现这样的原因是maven导入jar出错没有导入依赖的容器(jetty or tomcat)，最简单的跑起main方法并且不停止，只需要在maven引入<br>
+&lt;dependency&gt;<br>
+<span style="white-space:pre"></span>&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;<br>
+<span style="white-space:pre"></span>&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;<br>
+<span style="white-space:pre"></span>&lt;version&gt;1.3.3.RELEASE&lt;/version&gt;<br>
+&lt;/dependency&gt;<br>
+</div>
+<div><br>
+</div>
+<div><br>
+</div>
+<h3>二:配置属性加载</h3>
+<div><br>
+</div>
+<div>spring-boot 属性分为两种:<br>
+1.spring-boot默认属性(application.properties或者application.yml &nbsp;系统属性 &nbsp;环境变量属性)<br>
+2.自定义加载属性<br>
+<br>
+spring-boot启动的时候会默认扫描resources目录下面的application.properties或者application.yml,扫瞄结束后会把&#20540;放入到Environment。<br>
+初始化bean的时候需要用到配置的&#20540;，我们可以根据这三种方式去获取：<br>
+1).继承EnvironmentAware获取Environment<br>
+2).通过注解@value进行填充&#20540;<br>
+3).注入environment &nbsp;通过environment获取<br>
+具体代码:<br>
+<pre code_snippet_id="1720302" snippet_file_name="blog_20160617_2_2365474"  code_snippet_id="1720302" snippet_file_name="blog_20160617_2_2365474" name="code" class="java">@Configuration
+public class MyProperty  implements EnvironmentAware {
+    
+    public void setEnvironment(Environment environment) {
+        //方案一   继承EnvironmentAware    获取yml里面的值
+        RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, &quot;jdbc.&quot;);
+        String url = propertyResolver.getProperty(&quot;url&quot;);
+    }
+
+
+    //方案二  通过注解value进行填充值
+    @Value(&quot;${jdbc.url}&quot;)
+    private String url;
+
+
+    //方案三  注入environment  通过environment获取
+    @Autowired
+    private Environment environment;
+    public void init(){
+        RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, &quot;jdbc.&quot;);
+        String url = environment.getProperty(&quot;url&quot;);
+    }
+}</pre><br>
+如果需要改造加载方式，比如先去远程或者数据库获取配置项，没有的话再读取本地的application.properties,<br>
+需要用到PropertyPlaceholderConfigurer这个类,此类所适用的@Value(&quot;${jdbc.url}&quot;)占位符,占位符先去PropertyPlaceholderConfigurer资源类找，<br>
+找不到的话再去Environment环境里面找<br>
+<pre code_snippet_id="1720302" snippet_file_name="blog_20160617_3_555330"  code_snippet_id="1720302" snippet_file_name="blog_20160617_3_555330" name="code" class="java">/**
+*此类优先加载级别非常高，所以不需要担心其它需要用到属性值的类无法获取属性值
+*/
+@Configuration
+public class ConfigConfiguration {
+    @Bean
+    public PropertyPlaceholderConfigurer initPropertyPlaceholder() {
+        //创建占位符类
+        PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+        Properties[] properties = new Properties[3];
+		//TODO add properties
+        ppc.setPropertiesArray(properties);
+        return ppc;
+    }
+｝</pre><br>
+<br>
+如果需要修改Environment里面的属性我们可以这么做:<br>
+<pre code_snippet_id="1720302" snippet_file_name="blog_20160617_4_1253441"  code_snippet_id="1720302" snippet_file_name="blog_20160617_4_1253441" name="code" class="java">/**
+*spring 会自动注入applicationContext 到此方法参数
+*/
+@Bean
+public String changeEnvironment(PropertiesCache propertiesCache, ApplicationContext applicationContext){
+	//支持Environment获取  修改容器里面StandardServletEnvironment
+   StandardEnvironment standardEnvironment =applicationContext.getBean(StandardEnvironment.class);
+   standardEnvironment.getPropertySources().addLast(new PropertiesPropertySource(null, null));
+	return null;
+}</pre><br>
+<br>
+</div>
+<div>
+<h3>三:annotation总结分析</h3>
+<div><br>
+</div>
+基于类的注解:<br>
+--初始装载<br>
+@SpringBootApplication &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;spring-boot程序入口标志类<br>
+@Configuration &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 自动配置，类&#20284;于加载spring加载xml 装配所有的bean事务等 所标识的类里面可以使用@Bean 并且启动的时候会初始化bean<br>
+@EnableAutoConfiguration &nbsp; &nbsp; &nbsp; Spring-Boot 根据应用所声明的依赖来对Spring框架进行自动配置<br>
+@ComponentScan &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 规定扫描包的范围<br>
+@PropertySources &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;property扫描加载<br>
+--业务区分<br>
+@Component 定义该bean为一个普通组件<br>
+@Repository 定义该bean是一个仓储，用于数据库、mq、redis以及其它一些远程访问的资源<br>
+@Service &nbsp;定义该bean是一个业务逻辑<br>
+@Controller &nbsp;定义该bean是一个控制页面访问层<br>
+--加载条件<br>
+@Order &nbsp;配置加载顺序<br>
+@ConditionalOnClass &nbsp;该注解的参数对应的类必须存在，否则不解析该注解修饰的配置类；<br>
+@ConditionalOnMissingBean &nbsp;该注解表示，如果存在它修饰的类的bean，则不需要再创建这个bean；可以给该注解传入参数例如@ConditionOnMissingBean(name = &quot;example&quot;)，这个表示如果name为“example”的bean存在，这该注解修饰的代码块不执行。<br>
+@AutoConfigureAfter 在摸个自动装载类之后装载<br>
+<br>
+<br>
+基于属性的注解:<br>
+@Value 加载配置属性的&#20540;<br>
+@Autowired 自动注入bean<br>
+@Qualifier 当存在多个bean注入时，需要通过name进行过滤<br>
+@Resource 获取当前jvm的resource 也类&#20284;依赖注入<br>
+@Inject 字段注入bean<br>
+<br>
+<br>
+基于方法的注解:<br>
+@Bean &nbsp;发布一个返回object类型的bean，类&#20284;配置xml发布一个bean<br>
+@PostConstruct 指定当类加载完成的时候就会执行该方法<br>
+</div>
+<div><br>
+</div>
+<h3>四:mybatis集成</h3>
+<div><pre code_snippet_id="1720302" snippet_file_name="blog_20160617_5_9142163"  code_snippet_id="1720302" snippet_file_name="blog_20160617_5_9142163" name="code" class="java">public class MybatisConfiguration {
+
+
+    private static Log logger = LogFactory.getLog(MybatisConfiguration.class);
+
+
+	//创建DataSource  
+    @Bean
+    public DataSource dataSource(Environment env) {
+        DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setPassword(env.getProperty(&quot;jdbc.password&quot;));
+        druidDataSource.setUsername(env.getProperty(&quot;jdbc.username&quot;));
+        druidDataSource.setUrl(env.getProperty(&quot;jdbc.url&quot;));
+        druidDataSource.setDriverClassName(env.getProperty(&quot;jdbc.driver&quot;));
+        druidDataSource.setMaxActive(Integer.parseInt(env.getProperty(&quot;jdbc.poolMaximumActiveConnections&quot;)));
+        return druidDataSource;
+    }
+
+
+	//创建SqlSessionFactory  DataSource spring会自动导入到参数
+    @Bean
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) {
+        try {
+            SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+            sessionFactory.setDataSource(dataSource);
+			//set  map.xml的路径
+            sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver()
+                    .getResources(&quot;classpath:mapping/*.xml&quot;));
+            return sessionFactory.getObject();
+        } catch (Exception e) {
+            logger.error(&quot;not install sessionFactory&quot;, e);
+            throw new RuntimeException(&quot;not install sessionFactory&quot;);
+        }
+    }
+
+
+	//创建事务  DataSource spring会自动导入到参数
+    @Bean
+    public DataSourceTransactionManager transaction(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+}</pre><br>
+结记：spring-boot是较好的微服务实现容器，减少开发调试时间，并且非常好的对微服务支持，而微服务又需要利用微服务框架实现，微服务框架可以查看本人另外一片文章详细说明<a target="_blank" target="_blank" href="http://blog.csdn.net/yeyincai/article/details/51470475">基于grpc的服务化框架</a></div>
+<link rel="stylesheet" href="http://static.blog.csdn.net/public/res-min/markdown_views.css?v=1.0" />
+                      </div>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="skin_nav">        
+                     <div class="skin_edit"><i class="fa fa-th-list"></i>
+                     <div class="nav_list nav_list_edit"><a href="/yeyincai">文章列表</a></div>
+                  </div>
+                     
+                </div>
+                <div class="rssFix">
+        	        <a href="http://blog.csdn.net/yeyincai/rss/list" class="column"  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])"><i class="fa fa-rss"></i></a>
+                </div>        
+
+                <div id="goTopBtn" class="skin_backTop"><i class="fa fa-chevron-up"></i></div>
+        </div>
+        <div class="detail_b">
+          <p class="reprint_copy" style="display:none" id="copyright">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>  
+		   <!--      
+          <div class="bole" style="display:none">
+            <h2 class="bole_t clearfix"><span>伯乐推荐</span>
+              <label>一共有<em>{bolecount}</em>位博乐进行推荐</label>
+            </h2>
+           {bolecomment}              
+          </div>		
+          -->  
+           <!-- style=""style=""-->
+          <h2 class="praise" >
+            <label id="digg" ArticleId="51702059" onclick="btndigga();" ><span id="btnDigg">顶</span><em>2</em></label>
+            <label id="bury" onclick="btnburya();"><span id="btnBury"   >踩</span><em>0</em></label>
+          </h2>           
+                <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" >&nbsp;</a>   </div>
+                <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" >&nbsp;</a></div>
+           
+             <script type="text/javascript">
+                 function btndigga() {
+                     $(".tracking-ad[data-mod='popu_222'] a").click();
+                 }
+                 function btnburya() {
+                     $(".tracking-ad[data-mod='popu_223'] a").click();
+                 }
+
+                 $(function () {
+                     if ($(".markdown_views").length > 0) {
+			if($("#fromjs").length==0)
+			{
+                         $('pre.prettyprint code').each(function () {
+                             var lines = $(this).text().split('\n').length;
+                             var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                             $(this).addClass('has-numbering').parent().append($numbering);
+                             for (i = 1; i <= lines; i++) {
+                                 $numbering.append($('<li/>').text(i));
+                             };
+                             $numbering.fadeIn(1700);
+                         });
+			}
+                     }
+                     else {
+                         $("#article_content pre").each(function () {
+                             var $this = $(this);
+                             if ($this.attr("class") != undefined) {
+                                 if ($this.attr("class").indexOf("brush:") != -1) {
+                                     var lang = $this.attr("class").split(';')[0].split(':')[1];
+                                     $this.attr('name', 'code');
+                                     $this.attr('class', lang);
+                                 }
+                                 if ($this.attr("class")) {
+                                     $this.attr('name', 'code');
+                                 }
+                             }
+                         });
+                         $('#article_content textarea[name=code]').each(function () {
+                             var $this = $(this);
+                             if ($this.attr("class").indexOf(":") != -1) {
+                                 $this.attr("class", $this.attr("class").split(':')[0]);
+                             }
+                         });
+                         dp.SyntaxHighlighter.HighlightAll('code');
+                         $('.highlighter').addClass('dp-highlighter');
+                         if (!window.clipboardData) {
+                             setTimeout("setCopyBtn()", 500);
+                         }
+
+                         function __get_code_toolbar(snippet_id) {
+                             return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                                     + snippet_id
+                                     + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                                     + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                                     + snippet_id
+                                     + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+                         }
+
+                         $("[code_snippet_id]").each(function () {
+                             __s_id = $(this).attr("code_snippet_id");
+                             if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                                 __code_tool = __get_code_toolbar(__s_id);
+                                 $(this).prev().find(".tools").append(__code_tool);
+                             }
+                         });
+
+                         $(".bar").show();
+                     }
+                 });
+            </script>
+          <div class="blog_share">
+              <!--<i class="fa fa-qq"></i><i class="fa fa-weixin"></i><i class="fa fa-weibo"></i><i class="fa fa-renren"></i><i class="fa fa-qq"></i><i class="fa fa-weixin"></i>
+              <i class="fa fa-weibo"></i><i class="fa fa-renren"></i>-->                
+               <div class="bdsharebuttonbox tracking-ad" style="float: right;" data-mod="popu_172">
+                <a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+                <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"  style="background-position:0 -52px !important"></a>
+                <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"style="background-position:0 -104px !important"></a>
+                <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"style="background-position:0 -260px !important"></a>
+                <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"style="background-position:0 -208px !important"></a>
+                <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"style="background-position:0 -1612px !important" ></a>
+                </div>
+                <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+                <!-- Baidu Button END -->
+          </div>
+          <div class="forward_back">
+            <div class="back fl"><a href="javascript:void(0);" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='/yeyincai/article/details/51470475';"><span><i class="fa fa-arrow-left"></i></span><em>基于GRPC+consul通信的服务化框架</em></a></div><div class="forward fr"><a href="javascript:void(0);" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='/yeyincai/article/details/51764092';"><em>深入学习consul</em><span><i class="fa fa-arrow-right"></i></span></a></div>
+          </div>
+            <div>
+                <script type="text/javascript"> /*博客内容页下方Banner-728*90，创建于2014-7-3*/    var cpro_id = "u1607657";</script><script type="text/javascript" src="http://cpro.baidustatic.com/cpro/ui/c.js"></script>
+            </div>            
+        <!--  
+		{articleinsamecategory}
+            -->
+          <div class="comment" id="comment_form">
+              <div id="commentsbmitarear">
+                    <h2 class="comment_t">发表评论</h2>
+                    <dl class="publish_comment clearfix" id="commentbox">
+                      <dt><a href="http://my.csdn.net/"><img src=""></a></dt>
+                      <dd>                 
+			          <form action="/yeyincai/comment/submit?id=51702059" method="post" onsubmit="return subform(this);" id="commentform">
+					        <textarea class="publish_txt" id="comment_content"></textarea>
+					        <div class="publish clearfix">
+					
+					          <div class="publish_l"><i class="fa fa-code J_code"></i></div>
+
+					          <input type="hidden" id="comment_replyId" name="comment_replyId">
+					          <input type="hidden" id="comment_userId" name="comment_userId" value="">
+					          <input type="hidden" id="commentId" name="commentId" value="">
+					  
+					          <a href="javascript:void(0);" class="publish_btn"> 发表评论</a>&nbsp;&nbsp;<span id="tip_comment" style="color: Red; display: none;"></span>
+					
+					          <div class="comment-code-pop J_lang_list" id="lang_list" code="code"><a href="#html" style="width:95px;" class="long_name">HTML/XML</a><a href="#objc" style="width:95px;" class="long_name">objective-c</a><a href="#delphi" style="width:58px;" class="zhong_name">Delphi</a><a href="#ruby" class="zhong_name">Ruby</a><a href="#php">PHP</a><a href="#csharp" class="duan_name">C#</a><a style=" border-right: none;" href="#cpp" class="duan_name">C++</a><a style=" border-bottom:none;width:95px;" href="#javascript" class="long_name">JavaScript</a><a style=" border-bottom:none;width:95px;" href="#vb" class="long_name">Visual Basic</a><a style=" border-bottom:none;" href="#python" class="zhong_name">Python</a><a style=" border-bottom:none;" href="#java" class="zhong_name">Java</a><a style="border-bottom:none;" href="#css" class="duan_name">CSS</a><a style="border-bottom:none;" href="#sql" class="duan_name">SQL</a><a style="border:none; " href="#plain" class="duan_name">其它</a><span class="arrb"></span></div>
+					        </div>
+			         </form>
+                      </dd>
+                    </dl>
+               </div>
+              <a name="comments"></a>
+            <div class="comment_list" id="comment_list"></div>
+            <div  style="height:60px">&nbsp;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="skin_right">
+      <div id="skin_r_wrap" class="skin_r_wrap">
+        <div id="skin_r" class="skin_r"><i id="arrow_r" class="fa fa-arrow-right"></i>
+          <div class="mess"><a href="http://my.csdn.net/yeyincai"><img src="http://avatar.csdn.net/1/4/5/1_yeyincai.jpg" alt="img" class="head"></a>
+            <p class="mess_name">yeyincai</p>
+            <div class="grade">
+                <p  title="积分：892"><span>等级：</span><img src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog3.png"></p>
+                <p><span>排名：</span><span>千里之外</span></p>
+            </div>
+            <div class="blog_medal"><a href="http://blog.csdn.net/experts/rule.html"><img src="http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/bokezhunzhuanjiamiddle.png" alt="img" class="medal_img"></a>
+              <div class="medal_c"></div>
+              <div class="attention">
+			  <a href="javascript:void(0);" id="span_add_follow"><i class="fa fa-plus"></i><span>加关注</span></a>
+			  <a href="javascript:void(0);" onClick="window.open('http://msg.csdn.net/letters/model?receiver=yeyincai','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"><i class="fa fa-envelope-o"></i><span>发私信</span></a>			  			 
+			  </div>   
+			   <div class="contact"></div>         
+            </div>
+          </div>
+          <div class="classify">     
+             <!--
+            <dl class="classify_list js_list">
+	             <dt>
+	                  <div class="js_column"><i class="fa fa-th"></i><a href="#" class="column">文章分类</a></div>
+	            </dt>
+            </dl>
+
+                  <dl class="classify_list">
+              <dt><i class="fa fa-play-circle"></i><a  href="/yeyincai/blog/course" class="column">我的课程</a></dt>
+            </dl> 
+		    -->	    	
+            
+            
+                
+               
+               <dl class="classify_list">
+                     <div class="article_search">
+                         <div class="article_search_c">
+                            <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+                                <input type="text" id="inputSearch" placeholder="文章搜索"><i class="fa fa-search" id="btnSubmit"></i>
+                            </form>
+                         </div>
+                     </div>
+               </dl>  
+                    
+            <dl class="classify_list">
+              <dt><i class="fa fa-file-text"></i><a  href="/yeyincai/blog/column" class="column">博客专栏</a> </dt>
+            </dl>  
+                    
+           <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-th"></i><span class="column">文章分类</span></div>
+                <ul id="article_list0" class="article_list">
+				  <li><a href="/yeyincai/article/category/5720939" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">osgi学习</a><span>（11）</span></li><li><a href="/yeyincai/article/category/6115551" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">redis系列文章</a><span>（6）</span></li><li><a href="/yeyincai/article/category/6108974" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">并发学习</a><span>（2）</span></li><li><a href="/yeyincai/article/category/6115564" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">ssh学习</a><span>（8）</span></li><li><a href="/yeyincai/article/category/6115568" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">java基础</a><span>（10）</span></li><li><a href="/yeyincai/article/category/6116468" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">业务场景</a><span>（6）</span></li><li><a href="/yeyincai/article/category/6145740" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">服务框架</a><span>（7）</span></li><li><a href="/yeyincai/article/category/6275651" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">微服务</a><span>（1）</span></li><li><a href="/yeyincai/article/category/6407461" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">jvm</a><span>（1）</span></li>                  
+                </ul>
+              </dt>
+              <dd style="display:none"><a href="#" class="article_add"><i class="fa fa-plus"></i></a></dd>
+            </dl>
+            
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-calendar"></i><span class="column">文章存档</span></div>
+                <ul id="article_list1" class="article_list">
+                 
+                    <li><a href="/yeyincai/article/month/2017/01">2017年01月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2016/12">2016年12月</a><span>(2)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2016/10">2016年10月</a><span>(4)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2016/09">2016年09月</a><span>(2)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2016/06">2016年06月</a><span>(2)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2016/05">2016年05月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2016/03">2016年03月</a><span>(16)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2015/11">2015年11月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2015/08">2015年08月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2015/07">2015年07月</a><span>(2)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2015/05">2015年05月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2015/04">2015年04月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2015/03">2015年03月</a><span>(5)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2014/09">2014年09月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2014/08">2014年08月</a><span>(3)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2014/05">2014年05月</a><span>(3)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2014/04">2014年04月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2014/03">2014年03月</a><span>(1)</span></li>
+                
+                    <li><a href="/yeyincai/article/month/2013/12">2013年12月</a><span>(2)</span></li>
+                
+                </ul>
+              </dt>
+            </dl>
+                 
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-eye"></i><span class="column">阅读排行</span></div>
+                <ul class="article_list">
+                
+                 <li><a href="/yeyincai/article/details/51470475">基于GRPC+consul通信的服务化框架</a><span>（4506）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/47254173">关于shiro      session失效报错问题</a><span>（3967）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/50976692">grpc-demo</a><span>（2573）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/17681365">微信上的网站  用HTML5获取地理位置</a><span>（2312）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/44918477">ECHart显示杭州区域热力图</a><span>（2173）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/51702059">spring-boot 深入学习</a><span>（2125）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/39472289">spring hibernate配置切换数据源,实现读写分离</a><span>（1695）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/52652558">分布式系统基石etcd</a><span>（1640）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/25971833">Struts2   Action   单例多例模式</a><span>（1526）</span></li>
+                 
+                 <li><a href="/yeyincai/article/details/38435583">spring mvc登录拦截器</a><span>（1304）</span></li>
+                 
+                </ul>
+              </dt>
+            </dl>
+            
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-comments"></i><span class="column">评论排行</span></div>
+                <ul class="article_list">
+                  
+                  <li><a href="/yeyincai/article/details/51470475">基于GRPC+consul通信的服务化框架</a><span>（6）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/47254173">关于shiro      session失效报错问题</a><span>（2）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/50976692">grpc-demo</a><span>（2）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/17681365">微信上的网站  用HTML5获取地理位置</a><span>（1）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/50782173">1.redis背景和使用场景</a><span>（1）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/51702059">spring-boot 深入学习</a><span>（1）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/54561613">分布式定时任务调度系统</a><span>（0）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/25971833">Struts2   Action   单例多例模式</a><span>（0）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/25766247">niginx的配置</a><span>（0）</span></li>
+                  
+                  <li><a href="/yeyincai/article/details/22658173">J2EE连接oracle莫名其妙出现问题</a><span>（0）</span></li>
+                  
+                </ul>
+              </dt>
+            </dl>
+                
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-list-ol"></i><span class="column">推荐文章</span></div>
+                <ul class="article_list">
+                 <ul>
+<li><a href="http://blog.csdn.net/broadview2006/article/details/70257477" target="_blank">* 探索通用可编程数据平面</a></li>
+<li><a href="http://blog.csdn.net/carson_ho/article/details/70267574" 
+target="_blank">* 这是一份很有诚意的 Protocol Buffer 语法详解</a></li>
+<li><a href="http://blog.csdn.net/blogdevteam/article/details/70245135"target="_blank">* CSDN日报20170419 ——《我脸上被软件开发刻了几个字》</a></li>
+<li><a href="http://blog.csdn.net/guolin_blog/article/details/53939176" 
+target="_blank">* Android图片加载框架最全解析——从源码的角度理解Glide的执行流程</a></li>
+<li><a href="http://blog.csdn.net/mindfloating/article/details/70199199" 
+target="_blank">* 如果两个程序员差不多，选写作能力更好的那个</a></li>
+<li><a href="http://blog.csdn.net/wireless_com/article/details/70207298" 
+target="_blank">* 从构造函数看线程安全</a></li>
+
+</ul>
+                </ul>
+              </dt>
+            </dl>
+                  
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-commenting"></i><span class="column">最新评论</span></div>
+                <ul class="article_list new_comment">
+                  
+                    <li>                    
+                    <p><a href="/yeyincai/article/details/51702059">spring-boot 深入学习</a></p>                   
+                    <p><a href="/luo2pei4321" class="reply_name">luo2pei4321</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>changeEnvironment是放在ConfigConfiguration 类里面的吗？</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="/yeyincai/article/details/50782173">1.redis背景和使用场景</a></p>                   
+                    <p><a href="/u010850027" class="reply_name">u010850027</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>mark</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="/cyq1162/article/details/53303640">面试杂记：三个月的面试回忆录（携程、腾讯等）</a></p>                   
+                    <p><a href="/yeyincai" class="reply_name">yeyincai</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>来我们公司，ppmoney</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="/lansebolangcjl/article/details/52788198">Thrift客户端连接池设计</a></p>                   
+                    <p><a href="/yeyincai" class="reply_name">yeyincai</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>直接也是用过你那种，上线发现很多坑，后来采用新的方案http://m.blog.csdn.net/a...</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="">Thrift客户端连接池设计</a></p>                   
+                    <p><a href="/yeyincai" class="reply_name">yeyincai</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>会有坑之前我们也采用过你这种方式，后来生产环境出了很多问题，现在还了一种方案http://m.blo...</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="/yeyincai/article/details/47254173">关于shiro      session失效报错问题</a></p>                   
+                    <p><a href="/yeyincai" class="reply_name">yeyincai</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>@xionglaio:配置的时候配进去的</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="">关于shiro      session失效报错问题</a></p>                   
+                    <p><a href="/xionglaio" class="reply_name">xionglaio</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>lengthenTimeOut在哪里设置的？</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="/yeyincai/article/details/51470475">基于GRPC+consul通信的服务化框架</a></p>                   
+                    <p><a href="/yeyincai" class="reply_name">yeyincai</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>@wsy552211:哈哈谢谢</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="">基于GRPC+consul通信的服务化框架</a></p>                   
+                    <p><a href="/wsy552211" class="reply_name">wsy552211</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>简洁易懂</i></p>                    
+                  </li>      
+                 
+                    <li>                    
+                    <p><a href="">基于GRPC+consul通信的服务化框架</a></p>                   
+                    <p><a href="/yeyincai" class="reply_name">yeyincai</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>@lanmarco:谢谢</i></p>                    
+                  </li>      
+                           
+                </ul>
+              </dt>
+            </dl>
+                
+
+            <!--
+           [startblogcolumn]            
+             [startsearch]   
+               <dl class="classify_list">
+                     <div class="article_search">
+                         <div class="article_search_c">
+                            <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+                                <input type="text" id="inputSearch" placeholder="文章搜索"><i class="fa fa-search" id="btnSubmit"></i>
+                            </form>
+                         </div>
+                     </div>
+               </dl>  
+            [endsearch]   
+            
+            [startspecialcolumn]        
+            <dl class="classify_list">
+              <dt><i class="fa fa-file-text"></i><a  href="/yeyincai/blog/column" class="column">博客专栏</a> </dt>
+            </dl>  
+            [endspecialcolumn]   
+            
+             [startcategory]        
+           <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-th"></i><span class="column">文章分类</span></div>
+                <ul id="article_list0" class="article_list">
+				  {articlecategorys}                  
+                </ul>
+              </dt>
+              <dd style="display:none"><a href="#" class="article_add"><i class="fa fa-plus"></i></a></dd>
+            </dl>
+            [endcategory]
+
+            [startarchive]
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-calendar"></i><span class="column">文章存档</span></div>
+                <ul id="article_list1" class="article_list">
+                 [startlist]
+                    <li><a href="/{0}/article/month/{1}/{2}">{1}年{2}月</a><span>({3})</span></li>
+                [endlist]
+                </ul>
+              </dt>
+            </dl>
+             [endarchive]    
+                [startviewcountarticles]    
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-eye"></i><span class="column">阅读排行</span></div>
+                <ul class="article_list">
+                [startlist]
+                 <li><a href="{columnarticleurl}">{columnarticletitle}</a><span>（{columnarticlecount}）</span></li>
+                 [endlist]
+                </ul>
+              </dt>
+            </dl>
+            [endviewcountarticles]
+                [startcommentcountarticles]
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-comments"></i><span class="column">评论排行</span></div>
+                <ul class="article_list">
+                  [startlist]
+                  <li><a href="{columnarticleurl}">{columnarticletitle}</a><span>（{columnarticlecommentcount}）</span></li>
+                  [endlist]
+                </ul>
+              </dt>
+            </dl>
+                [endcommentcountarticles]
+                [starthomepagearticles]
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-list-ol"></i><span class="column">推荐文章</span></div>
+                <ul class="article_list">
+                 {cloumcontent}
+                </ul>
+              </dt>
+            </dl>
+                  [endhomepagearticles]
+                [startnewcomments]
+            <dl class="classify_list js_list">
+              <dt>
+                <div class="js_column_wrap"><i class="fa fa-commenting"></i><span class="column">最新评论</span></div>
+                <ul class="article_list new_comment">
+                  [startlist]
+                    <li>                    
+                    <p><a href="{articleurl}">spring-boot 深入学习</a></p>                   
+                    <p><a href="/{commentusername}" class="reply_name">{commentusername}</a><span>回复：</span></p>
+                    <p class="reply_c"><em></em><i>{commentcontent}</i></p>                    
+                  </li>      
+                 [endlist]          
+                </ul>
+              </dt>
+            </dl>
+                [endnewcomments]
+                [startcustom]
+                   <dl class="classify_list js_list">
+                      <dt>
+                        <div class="js_column_wrap"><i class="fa fa-cube"></i><span class="column">{columntitle}</span></div>
+                        <ul class="article_list">
+                         {columcontent}
+                        </ul>
+                      </dt>
+                    </dl>
+                [endcustom]
+         [endblogcolumn]    
+            -->
+
+            <!--
+            <dl class="classify_list">
+              <dt class="rss"><i class="fa fa-rss"></i>			 
+			  <span class="column">
+			   	<a href="http://blog.csdn.net/yeyincai/rss/list" class="column"  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">RSS订阅</a>
+			   </span>
+			  </dt>
+            </dl>
+            -->
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="skin_right_small" class="skin_right_small">
+      <div class="skin_r_small"><i id="faNavicon" class="fa fa-navicon"></i>
+        <div class="head_small"><a href="http://my.csdn.net/yeyincai"><img src="http://avatar.csdn.net/1/4/5/1_yeyincai.jpg" alt="img"></a></div>
+        <ul class="rSmallList">  
+           
+                
+                  <li class="small_article"><i class="fa fa-file-text"></i><a href="/yeyincai/blog/column" class="small_column">博客专栏</a></li>
+                    
+                  <li class="small_article js_smallArticle"><i class="fa fa-th"></i><a href="#" class="small_column">文章分类</a></li>
+                
+                  <li class="small_article js_smallArticle"><i class="fa fa-calendar"></i><a href="#" class="small_column">文章存档</a></li>
+                
+                  <li class="small_article js_smallArticle"><i class="fa fa-eye"></i><a href="#" class="small_column">阅读排行</a></li>
+              
+                  <li class="small_article js_smallArticle"><i class="fa fa-comments"></i><a href="#" class="small_column">评论排行</a></li>
+              
+                  <li class="small_article js_smallArticle"><i class="fa fa-list-ol"></i><a href="#" class="small_column">推荐文章</a></li>
+              
+                  <li class="small_article js_smallArticle"><i class="fa fa-commenting"></i><a href="#" class="small_column">最新评论</a></li>
+                      
+          <!-- 
+           [startblogcolumnsmall]   
+               [startspecialcolumn]    
+                  <li class="small_article"><i class="fa fa-file-text"></i><a href="/yeyincai/blog/column" class="small_column">博客专栏</a></li>
+               [endspecialcolumn]  
+                [startcategory]     
+                  <li class="small_article js_smallArticle"><i class="fa fa-th"></i><a href="#" class="small_column">文章分类</a></li>
+                [endcategory]     
+              [startarchive]
+                  <li class="small_article js_smallArticle"><i class="fa fa-calendar"></i><a href="#" class="small_column">文章存档</a></li>
+              [endarchive]
+              [startviewcountarticles]  
+                  <li class="small_article js_smallArticle"><i class="fa fa-eye"></i><a href="#" class="small_column">阅读排行</a></li>
+              [endviewcountarticles]  
+              [startcommentcountarticles]
+                  <li class="small_article js_smallArticle"><i class="fa fa-comments"></i><a href="#" class="small_column">评论排行</a></li>
+              [endcommentcountarticles]
+              [starthomepagearticles]
+                  <li class="small_article js_smallArticle"><i class="fa fa-list-ol"></i><a href="#" class="small_column">推荐文章</a></li>
+              [endhomepagearticles]
+              [startnewcomments]
+                  <li class="small_article js_smallArticle"><i class="fa fa-commenting"></i><a href="#" class="small_column">最新评论</a></li>
+              [endnewcomments]
+              [startcustom]
+                  <li class="small_article js_smallArticle"><i class="fa fa-cube"></i><a href="#" class="small_column">{columntitle}</a></li>
+              [endcustom]
+          [endblogcolumnsmall]    
+          -->         
+        </ul>        
+      </div>
+    </div>
+    <div id="mask"></div>
+    <script type="text/javascript" src="http://static.blog.csdn.net/skin/skin2-template/js/apps/accordion.js"></script>
+    
+    <script type="text/javascript" src="http://static.blog.csdn.net/skin/skin2-template/js/apps/jquery.mousewheel.js"></script>
+    <script type="text/javascript" src="http://static.blog.csdn.net/skin/skin2-template/js/apps/jquery.rollbar.min.js"></script>
+    
+    <script type="text/javascript" src="http://static.blog.csdn.net/skin/skin2-template/js/apps/transition.js"></script>  
+     <script id="noticeScript" type="text/javascript" charset="utf-8" btnId="header_notice_num" wrapId="note1" count="5" subCount="5" src="http://c.csdnimg.cn/public/common/toolbar/js/notify.js"></script>  
+    <!--script( type="text/javascript" src="http://csdnimg.cn/pubfooter/js/publib_footer.js" )-->
+    <!--script( type="text/javascript" src="http://static.csdn.net/public/common/toolbar/js/toolbar.js" )-->
+    <script id="csdn-toolbar-id" btnId="header_notice_num" wrapId="note1" count="5" subCount="5" type="text/javascript" src="http://c.csdnimg.cn/public/common/toolbar/js/toolbar.js"></script>
+
+     <div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+    </div>
+    <div id="report_dialog">
+    </div>
+
+    <div id="popup_mask"></div>
+    <style  type="text/css">
+        #popup_mask
+        {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            left: 0px;
+            top: 0px;
+            opacity: 0.3;
+            filter: alpha(opacity=30);
+            display: none;
+        }
+
+         .skin_list  dl dd div ol {  
+        margin-left:15px;
+            }  
+
+       .skin_list dl dd div ol li {  
+         display:list-item;list-style-type:decimal;margin-left:15px;
+            }       
+
+    </style>     
+      
+        <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+        </div> 
+
+       <!-- 广告位开始 -->
+        <ins data-revive-zoneid="72" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+    <!-- 广告位结束 -->
+
+   <link rel="stylesheet" href="http://static.blog.csdn.net/css/blog_code.css" />
+            <script type="text/javascript" src="http://static.blog.csdn.net/scripts/saveToCode.js"></script>     
+	<script type="text/javascript" src="//csdnimg.cn/rabbit/tracking-ad/main.js?75eacd8></script>
+  </body>
+</html>
+ <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/async_new.js"></script>      
+
+<script  type="text/javascript">
+    var fromjs=$("#fromjs");
+    if(fromjs.length>0)
+    {                  
+        $("#fromjs .markdown_views pre").addClass("prettyprint");       
+        prettyPrint();
+
+        $('pre.prettyprint code').each(function () {
+            var lines = $(this).text().split('\n').length;
+            var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+            $(this).addClass('has-numbering').parent().append($numbering);
+            for (i = 1; i <= lines; i++) {
+                $numbering.append($('<li/>').text(i));
+            };
+            $numbering.fadeIn(1700);
+        });
+
+        $('.pre-numbering li').css("color","#999");             
+    }
+
+    $(function(){
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },500);         
+       
+
+    });
+
+</script>
+
